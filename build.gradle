@@ -17,7 +17,7 @@
 
 buildscript {
   ext {
-    kotlinVersion = "1.4.10"
+    kotlinVersion = "1.6.0"
     junitPlatformVersion = "1.0.2"
   }
 
