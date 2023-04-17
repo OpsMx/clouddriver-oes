@@ -83,6 +83,11 @@ dependencies {
   implementation "io.spinnaker.kork:kork-secrets"
   implementation "io.spinnaker.kork:kork-security"
   implementation "io.kubernetes:client-java"
+  implementation ("io.kubernetes:client-java-api:11.0.4"){
+    force = true
+  }
+
+
   implementation "org.apache.commons:commons-lang3"
   implementation "org.springframework.boot:spring-boot-actuator"
   implementation "org.springframework.boot:spring-boot-starter-web"
@@ -101,8 +106,8 @@ dependencies {
   testImplementation "org.junit.platform:junit-platform-runner"
   testImplementation "org.mockito:mockito-core"
   testImplementation "org.mockito:mockito-junit-jupiter"
-  testImplementation "cglib:cglib-nodep"
-  testImplementation "org.objenesis:objenesis"
+  testImplementation "cglib:cglib-nodep:3.3.0"
+  testImplementation "org.objenesis:objenesis:2.5.1"
   testImplementation "org.spockframework:spock-core"
   testImplementation "org.spockframework:spock-spring"
   testImplementation "org.springframework:spring-test"
