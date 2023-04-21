@@ -67,3 +67,10 @@ tasks.withType(Tar){
 tasks.withType(Zip){
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
+run {
+  jvmArgs = ['-Djava.security.egd=file:/dev/./urandom',
+             '-Dspring.config.import=optional:/opt/spinnaker/config/' ,
+             '--add-opens=java.base/sun.net=ALL-UNNAMED', '--add-exports=java.base/sun.net=ALL-UNNAMED',
+             '--add-opens=java.base/java.time=ALL-UNNAMED']
+}
