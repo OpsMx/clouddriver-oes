@@ -379,7 +379,7 @@ spring:
         on-profile: ro
 
 redis:
-  connection: ${services.redisRo.baseUrl:${services.redis.baseUrl}}
+  connection: ${services.redisRo.baseUrl:redis://localhost:6379}
 
 caching:
   writeEnabled: false
