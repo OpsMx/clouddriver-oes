@@ -78,7 +78,7 @@ class RedisConfig {
       "primaryDefault"
     )
 
-    //if (jedisPool instanceof InstrumentedJedisPool) {
+    if (jedisPool instanceof InstrumentedJedisPool) {
       //GenericObjectPool internalPool = ((InstrumentedJedisPool) jedisPool).delegated.internalPool
 
       registry.gauge("jedis.pool.maxIdle", jedisPool, { JedisPool p -> return p.getMaxIdle() as Double })
@@ -86,7 +86,7 @@ class RedisConfig {
       //registry.gauge("jedis.pool.numActive", jedisPool, { JedisPool p -> return p.getNumActive() as Double })
       //registry.gauge("jedis.pool.numIdle", jedisPool, { JedisPool p -> return p.getNumIdle() as Double })
       //registry.gauge("jedis.pool.numWaiters", jedisPool, { JedisPool p -> return p.getNumWaiters() as Double })
-    //}
+    }
 
     return jedisPool
   }
@@ -144,14 +144,14 @@ class RedisConfig {
           jedis?.close()
         }
 
-        //if (jedisPool instanceof InstrumentedJedisPool) {
+        if (jedisPool instanceof InstrumentedJedisPool) {
 //          GenericObjectPool internalPool = ((InstrumentedJedisPool) jedisPool).delegated.internalPool //thx groovy
           health.withDetail('maxIdle', jedisPool.getMaxIdle())
           health.withDetail('minIdle', jedisPool.getMinIdle())
          // health.withDetail('numActive', jedisPool.getNumActive())
          // health.withDetail('numIdle', jedisPool.getNumIdle())
          // health.withDetail('numWaiters', jedisPool.getNumWaiters())
-        //}
+        }
 
         return health.build()
       }
