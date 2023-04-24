@@ -93,7 +93,7 @@ public class AccountDefinitionConfiguration {
   @Bean
   public AccountDefinitionSecretManager accountDefinitionSecretManager(
       UserSecretManager userSecretManager, AccountSecurityPolicy policy) {
-    return new AccountDefinitionSecretManager(getUserSecretManager(), policy);
+    return new AccountDefinitionSecretManager(userSecretManager, policy);
   }
 
   /**
