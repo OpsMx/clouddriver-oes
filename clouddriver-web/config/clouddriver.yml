@@ -13,6 +13,10 @@ redis:
 services:
   front50:
     baseUrl: http://localhost:8080
+  fiat:
+    baseUrl: http://localhost:7003
+  redis:
+    baseUrl :redis://localhost:6379
 
 management.health.elasticsearch.enabled: false
 
@@ -374,7 +378,7 @@ spring:
         on-profile: ro
 
 redis:
-  connection: ${services.redisRo.baseUrl:${services.redis.baseUrl}}
+  connection: ${services.redisRo.baseUrl:redis://localhost:6379}
 
 caching:
   writeEnabled: false
