@@ -17,16 +17,16 @@ dependencies {
   implementation "org.hibernate.validator:hibernate-validator"
 
   testImplementation project(":clouddriver-saga-test")
-  testImplementation "cglib:cglib-nodep"
-  testImplementation "org.objenesis:objenesis"
+  testImplementation "cglib:cglib-nodep:3.3.0"
+  testImplementation "org.objenesis:objenesis:2.5.1"
   testImplementation "org.junit.platform:junit-platform-runner"
   testImplementation "org.junit.jupiter:junit-jupiter-api"
   testImplementation "org.springframework:spring-test"
   testImplementation "org.springframework.boot:spring-boot-test"
   testImplementation "org.assertj:assertj-core"
   testImplementation "io.strikt:strikt-core"
-  testImplementation "dev.minutest:minutest"
-  testImplementation "io.mockk:mockk"
+  testImplementation "dev.minutest:minutest:1.13.0"
+  testImplementation "io.mockk:mockk:1.10.5"
 
   testRuntimeOnly "org.junit.platform:junit-platform-launcher"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"

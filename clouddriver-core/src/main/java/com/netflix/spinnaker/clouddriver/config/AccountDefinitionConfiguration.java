@@ -49,7 +49,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -91,6 +90,11 @@ public class AccountDefinitionConfiguration {
   }
 
   @Bean
+  public SecretManager getSecretManager() {
+    return new SecretManager(new SecretEngineRegistry());
+  }
+
+  @Bean
   public AccountDefinitionSecretManager accountDefinitionSecretManager(
       UserSecretManager userSecretManager, AccountSecurityPolicy policy) {
     return new AccountDefinitionSecretManager(userSecretManager, policy);
@@ -115,8 +119,6 @@ public class AccountDefinitionConfiguration {
         mapper, accountDefinitionSecretManager, new SecretSession(secretManager));
   }
 
-  @Bean
-  @ConditionalOnBean(AccountDefinitionRepository.class)
   public AccountDefinitionService accountDefinitionService(
       AccountDefinitionRepository repository,
       AccountDefinitionSecretManager secretManager,
