@@ -44,6 +44,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
@@ -55,7 +56,7 @@ public abstract class KubeTestUtils {
     ResourceLoader resourceLoader = new DefaultResourceLoader();
     try {
       InputStream is = resourceLoader.getResource(file).getInputStream();
-      Yaml yaml = new Yaml(new SafeConstructor());
+      Yaml yaml = new Yaml(new SafeConstructor(new LoaderOptions()));
       Iterable<Object> contentIterable = yaml.loadAll(is);
       List<Map<String, Object>> content =
           StreamSupport.stream(contentIterable.spliterator(), false)

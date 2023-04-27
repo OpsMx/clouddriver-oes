@@ -31,6 +31,7 @@ import okhttp3.Request
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.SafeConstructor
 
@@ -105,7 +106,7 @@ class TitusJobProvider implements JobProvider<TitusJobStatus> {
       if (fileName.endsWith('.json')) {
         results = objectMapper.readValue(fileContents, Map)
       } else if (fileName.endsWith('.yml')) {
-        def yaml = new Yaml(new SafeConstructor())
+        def yaml = new Yaml(new SafeConstructor(new LoaderOptions()))
         results = yaml.load(fileContents)
       } else {
         Properties propertiesFile = new Properties()
