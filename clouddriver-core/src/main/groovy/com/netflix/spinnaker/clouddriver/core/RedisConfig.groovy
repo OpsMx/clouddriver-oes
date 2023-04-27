@@ -81,11 +81,11 @@ class RedisConfig {
     if (jedisPool instanceof InstrumentedJedisPool) {
       //GenericObjectPool internalPool = ((InstrumentedJedisPool) jedisPool).delegated.internalPool
 
-      registry.gauge("jedis.pool.maxIdle", jedisPool, { JedisPool p -> return p.maxIdle as Double })
-      registry.gauge("jedis.pool.minIdle", jedisPool, { JedisPool p -> return p.minIdle as Double })
-      registry.gauge("jedis.pool.numActive", jedisPool, { JedisPool p -> return p.numActive as Double })
-      registry.gauge("jedis.pool.numIdle", jedisPool, { JedisPool p -> return p.numIdle as Double })
-      registry.gauge("jedis.pool.numWaiters", jedisPool, { JedisPool p -> return p.numWaiters as Double })
+      registry.gauge("jedis.pool.maxIdle", jedisPool, { JedisPool p -> return p.getMaxIdle() as Double })
+      registry.gauge("jedis.pool.minIdle", jedisPool, { JedisPool p -> return p.getMinIdle() as Double })
+      //registry.gauge("jedis.pool.numActive", jedisPool, { JedisPool p -> return p.getNumActive() as Double })
+      //registry.gauge("jedis.pool.numIdle", jedisPool, { JedisPool p -> return p.getNumIdle() as Double })
+      //registry.gauge("jedis.pool.numWaiters", jedisPool, { JedisPool p -> return p.getNumWaiters() as Double })
     }
 
     return jedisPool
@@ -112,6 +112,7 @@ class RedisConfig {
       new JedisPool(redisPoolConfig ?: new GenericObjectPoolConfig(), host, port, timeout, password, database, isSSL),
       name
     )
+
   }
 
   @Bean
@@ -144,12 +145,12 @@ class RedisConfig {
         }
 
         if (jedisPool instanceof InstrumentedJedisPool) {
-          //GenericObjectPool internalPool = ((InstrumentedJedisPool) jedisPool).delegated.internalPool //thx groovy
-          health.withDetail('maxIdle', jedisPool.maxIdle)
-          health.withDetail('minIdle', jedisPool.minIdle)
-          health.withDetail('numActive', jedisPool.numActive)
-          health.withDetail('numIdle', jedisPool.numIdle)
-          health.withDetail('numWaiters', jedisPool.numWaiters)
+//          GenericObjectPool internalPool = ((InstrumentedJedisPool) jedisPool).delegated.internalPool //thx groovy
+          health.withDetail('maxIdle', jedisPool.getMaxIdle())
+          health.withDetail('minIdle', jedisPool.getMinIdle())
+         // health.withDetail('numActive', jedisPool.getNumActive())
+         // health.withDetail('numIdle', jedisPool.getNumIdle())
+         // health.withDetail('numWaiters', jedisPool.getNumWaiters())
         }
 
         return health.build()

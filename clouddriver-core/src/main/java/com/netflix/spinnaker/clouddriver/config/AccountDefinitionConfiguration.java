@@ -33,6 +33,7 @@ import com.netflix.spinnaker.clouddriver.security.AuthorizedRolesExtractor;
 import com.netflix.spinnaker.clouddriver.security.DefaultAccountSecurityPolicy;
 import com.netflix.spinnaker.credentials.definition.CredentialsDefinition;
 import com.netflix.spinnaker.fiat.shared.FiatPermissionEvaluator;
+import com.netflix.spinnaker.kork.secrets.SecretEngineRegistry;
 import com.netflix.spinnaker.kork.secrets.SecretManager;
 import com.netflix.spinnaker.kork.secrets.SecretSession;
 import com.netflix.spinnaker.kork.secrets.user.UserSecretManager;
@@ -81,6 +82,17 @@ public class AccountDefinitionConfiguration {
     return fiatEnabled && permissionEvaluator != null
         ? new DefaultAccountSecurityPolicy(permissionEvaluator)
         : new AllowAllAccountSecurityPolicy();
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public UserSecretManager getUserSecretManager() {
+    return new UserSecretManager(new SecretEngineRegistry());
+  }
+
+  @Bean
+  public SecretManager getSecretManager() {
+    return new SecretManager(new SecretEngineRegistry());
   }
 
   @Bean
