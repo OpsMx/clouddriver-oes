@@ -25,6 +25,7 @@ import static com.netflix.spinnaker.clouddriver.cloudfoundry.utils.TestUtils.ass
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.*;
 
 import com.netflix.spinnaker.clouddriver.cloudfoundry.client.api.ConfigService;
