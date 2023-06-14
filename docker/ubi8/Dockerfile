@@ -14,7 +14,7 @@ ENV KUBECTL_RELEASE=1.22.0
 ENV AWS_CLI_VERSION=1.18.152
 ENV AWS_CLI_S3_CMD=2.0.2
 ENV AWS_AIM_AUTHENTICATOR_VERSION=0.5.9
-ENV GOOGLE_CLOUD_SDK_VERSION=412.0.0
+ENV GOOGLE_CLOUD_SDK_VERSION=435.0.0
 ENV ECR_TOKEN_VERSION=v1.0.2
 
 ENV PATH "$PATH:/usr/local/bin/:/opt/google-cloud-sdk/bin/:/usr/local/bin/aws-iam-authenticator"
@@ -23,9 +23,9 @@ USER root
 RUN yum -y install bash jq  tar unzip wget unzip procps  java-17-openjdk-devel.x86_64 vim  net-tools curl git 
 
 # AWS CLI
-RUN yum -y install python2-pip && \
-    pip2 install --upgrade awscli==${AWS_CLI_VERSION} s3cmd==${AWS_CLI_S3_CMD} python-magic \
-     && yum -y remove  python2-pip && \
+RUN yum -y install python3-pip && \
+    pip3 install --upgrade awscli==${AWS_CLI_VERSION} s3cmd==${AWS_CLI_S3_CMD} python-magic \
+     && yum -y remove  python3-pip && \
     yum clean all
 
 
