@@ -66,15 +66,8 @@ subprojects {
       implementation("io.netty:netty-codec-http:4.1.91.Final")
       implementation("org.apache.ivy:ivy:2.5.1")
       implementation("org.json:json:20230227")
-      implementation("org.yaml:snakeyaml:2.0"){force=true}
-      implementation("commons-io:commons-io:2.7") { force = true }
-      implementation("net.minidev:json-smart:2.4.9") { force = true }
-      implementation("org.bitbucket.b_c:jose4j:0.9.3") { force = true }
+      implementation("org.yaml:snakeyaml:2.0")
 
-      testImplementation("org.yaml:snakeyaml:2.0"){force=true}
-      testImplementation("commons-io:commons-io:2.7") { force = true }
-      testImplementation("net.minidev:json-smart:2.4.9") { force = true }
-      testImplementation("org.bitbucket.b_c:jose4j:0.9.3") { force = true }
       annotationProcessor platform("io.spinnaker.kork:kork-bom:$korkVersion")
       annotationProcessor "org.projectlombok:lombok"
       annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -135,10 +128,4 @@ defaultTasks ':clouddriver-web:run'
 
 configurations.all {
   exclude group: 'org.jetbrains', module: 'annotations'
-  resolutionStrategy {
-    force("org.yaml:snakeyaml:2.0")
-    force("commons-io:commons-io:2.7")
-    force("net.minidev:json-smart:2.4.9")
-    force("org.bitbucket.b_c:jose4j:0.9.3")
-  }
 }
