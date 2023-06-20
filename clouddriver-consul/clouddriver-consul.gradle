@@ -3,8 +3,8 @@ dependencies {
 
   implementation "com.squareup.okhttp:okhttp:2.7.5"
   implementation "com.squareup.retrofit:retrofit:1.9.0"
-  implementation "org.apache.groovy:groovy:4.0.9"
-  implementation "org.apache.groovy:groovy-json:4.0.9"
+  implementation "org.apache.groovy:groovy"
+  implementation "org.apache.groovy:groovy-json"
   implementation "org.springframework.boot:spring-boot-starter-web"
 
   testImplementation "cglib:cglib-nodep:3.3.0"

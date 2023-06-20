@@ -9,7 +9,7 @@ dependencies {
   implementation "io.spinnaker.kork:kork-retrofit"
   implementation "io.spinnaker.kork:kork-security"
   implementation "com.squareup.retrofit:retrofit:1.9.0"
-  implementation "org.apache.groovy:groovy:4.0.9"
+  implementation "org.apache.groovy:groovy"
   implementation ("org.elasticsearch:elasticsearch:8.6.2") {
      exclude group: "org.yaml", module: "snakeyaml:1.33"
   }

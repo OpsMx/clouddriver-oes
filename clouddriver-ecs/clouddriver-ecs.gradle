@@ -44,7 +44,7 @@ dependencies {
   implementation "org.apache.commons:commons-lang3"
   implementation "org.apache.httpcomponents:httpclient"
   implementation "org.apache.httpcomponents:httpcore"
-  implementation "org.apache.groovy:groovy:4.0.9"
+  implementation "org.apache.groovy:groovy"
   implementation "org.springframework.boot:spring-boot-starter-test"
   implementation "org.springframework.boot:spring-boot-starter-web"
 

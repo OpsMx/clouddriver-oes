@@ -11,8 +11,8 @@ dependencies {
   annotationProcessor "org.projectlombok:lombok"
   testAnnotationProcessor "org.projectlombok:lombok"
 
-  implementation "org.apache.groovy:groovy:4.0.9"
-  implementation "org.apache.groovy:groovy-json:4.0.9"
+  implementation "org.apache.groovy:groovy"
+  implementation "org.apache.groovy:groovy-json"
   implementation "org.apache.commons:commons-lang3"
   implementation ("com.google.apis:google-api-services-compute:beta-rev20201102-1.30.10") {
     force = true

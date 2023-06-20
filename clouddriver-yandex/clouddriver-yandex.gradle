@@ -16,7 +16,7 @@ dependencies {
   implementation 'com.yandex.cloud:java-sdk-services:2.1.1'
   compileOnly "io.opencensus:opencensus-api:0.31.1"
   compileOnly "io.opencensus:opencensus-contrib-grpc-metrics:0.31.1"
-  implementation "org.apache.groovy:groovy-datetime:4.0.9"
+  implementation "org.apache.groovy:groovy-datetime"
   implementation "org.apache.commons:commons-lang3"
   implementation "com.netflix.frigga:frigga:0.26.0"
   implementation "com.netflix.spectator:spectator-api:1.5.3"
