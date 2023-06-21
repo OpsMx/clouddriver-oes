@@ -38,7 +38,7 @@ dependencies {
 
   testImplementation "io.spinnaker.kork:kork-sql-test"
   testImplementation "org.testcontainers:mysql"
-  testImplementation "mysql:mysql-connector-java:8.0.20"
+  testImplementation "mysql:mysql-connector-java"
 
   testImplementation "cglib:cglib-nodep:3.3.0"
   testImplementation "org.objenesis:objenesis:3.3"
