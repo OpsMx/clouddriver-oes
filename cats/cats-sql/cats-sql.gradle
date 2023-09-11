@@ -41,16 +41,10 @@ dependencies {
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.1.1"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.1.1"
-  implementation("org.jooq:jooq:3.13.6"){
-    force(true)
-  }
   implementation "org.springframework.boot:spring-boot-starter-web"
   implementation "com.google.guava:guava"
-  testImplementation("org.jooq:jooq:3.13.6"){
-    force(true)
-  }
-  testImplementation project(":cats:cats-test")
 
+  testImplementation project(":cats:cats-test")
   testImplementation "cglib:cglib-nodep:3.3.0"
   testImplementation "io.spinnaker.kork:kork-sql-test"
   testImplementation "com.nhaarman:mockito-kotlin:1.6.0"
