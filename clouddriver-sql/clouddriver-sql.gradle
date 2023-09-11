@@ -28,9 +28,6 @@ dependencies {
   implementation "io.spinnaker.kork:kork-sql"
   implementation "io.spinnaker.kork:kork-telemetry"
   implementation "de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.3.0"
-  implementation("org.jooq:jooq:3.13.6"){
-    force(true)
-  }
   implementation "org.hibernate.validator:hibernate-validator"
   implementation "com.fasterxml.jackson.core:jackson-annotations"
   implementation "com.fasterxml.jackson.core:jackson-databind"
