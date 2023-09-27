@@ -56,13 +56,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 /** Test the deleteManifest stage. */
-@RunWith(JUnitPlatform.class)
 public class KubernetesDeleteManifestOperationTest {
   private static final GlobalResourcePropertyRegistry resourcePropertyRegistry =
       new GlobalResourcePropertyRegistry(
