@@ -377,7 +377,7 @@ redis:
   connection: ${services.redisRo.baseUrl:${services.redis.baseUrl}}
 
 caching:
-  writeEnabled: true
+  writeEnabled: false
 
 ---
 # This profile is used in HA deployments for a clouddriver that handles mutating requests from
@@ -389,4 +389,4 @@ spring:
         on-profile: rw
 
 caching:
-  writeEnabled: true
+  writeEnabled: false
