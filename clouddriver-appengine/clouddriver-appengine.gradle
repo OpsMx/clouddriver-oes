@@ -29,6 +29,7 @@ dependencies {
   implementation "org.apache.groovy:groovy"
   implementation "org.apache.groovy:groovy-json"
   implementation "org.eclipse.jgit:org.eclipse.jgit"
+
   implementation "org.springframework.boot:spring-boot-actuator"
   implementation "org.springframework.boot:spring-boot-starter-web"
   implementation "org.springframework.cloud:spring-cloud-context"
