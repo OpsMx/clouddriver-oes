@@ -53,7 +53,7 @@ USER root
 
 #RUN yum -y install bash jq  tar unzip wget procps  java-17-openjdk-devel.x86_64 vim  net-tools curl git 
 
-RUN yum -y install  wget git
+RUN yum -y install  wget git  procps
 
 
 # AWS CLI
