@@ -84,7 +84,7 @@ aws:
           - deviceName: /dev/sdc
             virtualName: ephemeral1
   defaultRegions:
-    - name: us-east-1
+    - name: us-east-2
   defaultKeyPairTemplate: '{{name}}-keypair'
 
   # an empty list means we are directly managing the AWS account we have credentials for (named default.account.env)
