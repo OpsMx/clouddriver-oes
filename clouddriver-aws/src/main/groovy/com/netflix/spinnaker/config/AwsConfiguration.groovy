@@ -66,7 +66,6 @@ import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 
 @Configuration
-@ConditionalOnProperty('aws.enabled')
 @ComponentScan(["com.netflix.spinnaker.clouddriver.aws"])
 @EnableConfigurationProperties(AwsConfigurationProperties)
 @Import([
