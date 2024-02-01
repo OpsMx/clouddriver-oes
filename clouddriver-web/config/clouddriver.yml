@@ -52,8 +52,8 @@ default:
   account:
     env: default
 
-aws:
-  enabled: ${AWS_ENABLED:false}
+#aws:
+  #enabled: ${AWS_ENABLED:false}
   #  features:
   #    launch-templates:
   #      enabled: true
@@ -71,25 +71,25 @@ aws:
   #  proxyDomain: foo
   #  proxyWorkstation: foo
   #  protocol: HTTP
-  defaults:
-    iamRole: BaseIAMRole
-    unknownInstanceTypeBlockDevice:
-      deviceName: /dev/sdb
-      size: 40
-    instanceClassBlockDevices:
-      - instanceClass: m3
-        blockDevices:
-          - deviceName: /dev/sdb
-            virtualName: ephemeral0
-          - deviceName: /dev/sdc
-            virtualName: ephemeral1
-  defaultRegions:
-    - name: us-east-1
-  defaultKeyPairTemplate: '{{name}}-keypair'
+  #defaults:
+  #  iamRole: BaseIAMRole
+  #  unknownInstanceTypeBlockDevice:
+  #    deviceName: /dev/sdb
+  #    size: 40
+  #  instanceClassBlockDevices:
+  #    - instanceClass: m3
+  #      blockDevices:
+  #        - deviceName: /dev/sdb
+  #          virtualName: ephemeral0
+  #        - deviceName: /dev/sdc
+  #          virtualName: ephemeral1
+  #defaultRegions:
+  #  - name: us-east-1
+  #defaultKeyPairTemplate: '{{name}}-keypair'
 
   # an empty list means we are directly managing the AWS account we have credentials for (named default.account.env)
   # see prod profile section below for an example configuration to manage other accounts via STS assume role
-  accounts: []
+  #accounts: []
 
 azure:
   enabled: ${AZURE_ENABLED:false}
