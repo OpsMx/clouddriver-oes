@@ -257,9 +257,6 @@ kubernetes:
   v2:
     applyAppLabels: true
 
-dockerRegistry:
-  enabled: ${DOCKER_REGISTRY_ENABLED:false}
-
 dcos:
   enabled: false
 
