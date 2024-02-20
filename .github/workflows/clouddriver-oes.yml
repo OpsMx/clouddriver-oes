@@ -109,7 +109,8 @@ jobs:
     
       - id: get-build-name
         run: |
-            imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+            imageName="${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-${{ steps.build_variables.outputs.GITHASH }}-${{ steps.build_variables.outputs.BUILDDATE }}"
+    
             echo "clouddriver=$imageName" >> $GITHUB_OUTPUT
   outputs:
     runs-on: ubuntu-latest
