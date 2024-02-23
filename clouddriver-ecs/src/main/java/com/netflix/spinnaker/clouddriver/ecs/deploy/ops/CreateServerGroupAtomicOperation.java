@@ -651,19 +651,24 @@ public class CreateServerGroupAtomicOperation
       ListAccountSettingsResult response = ecs.listAccountSettings(request);
 
       for (Setting setting : response.getSettings()) {
+        log.info("setting.getName() : {}", setting.getName());
+        log.info("setting.getValue() : {}", setting.getValue());
         if (setting.getName().equals(SettingName.ServiceLongArnFormat.toString())
             && setting.getValue().equals("enabled")) {
+          log.info("ServiceLongArnFormat : {}", "true");
           isServiceLongArnFormatEnabled = true;
         }
 
         if (setting.getName().equals(SettingName.TaskLongArnFormat.toString())
             && setting.getValue().equals("enabled")) {
+          log.info("TaskLongArnFormat : {}", "true");
           isTaskLongArnFormatEnabled = true;
         }
       }
       nextToken = response.getNextToken();
     } while (nextToken != null);
-
+    log.info("isServiceLongArnFormatEnabled : {}", isServiceLongArnFormatEnabled);
+    log.info("isTaskLongArnFormatEnabled : {}", isTaskLongArnFormatEnabled);
     return isServiceLongArnFormatEnabled && isTaskLongArnFormatEnabled;
   }
 
