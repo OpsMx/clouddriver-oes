@@ -58,6 +58,7 @@ dependencies {
   implementation "org.springframework.boot:spring-boot-actuator"
   implementation "org.springframework.boot:spring-boot-starter-web"
   implementation "org.junit.platform:junit-platform-commons:1.9.0"
+  implementation "org.bitbucket.b_c:jose4j:0.9.6"
 
   testImplementation "com.github.tomakehurst:wiremock-jre8-standalone"
   testImplementation "io.spinnaker.kork:kork-aws"
