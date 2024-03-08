@@ -22,10 +22,8 @@ import com.netflix.spinnaker.config.ConnectionPools;
 import com.netflix.spinnaker.kork.sql.config.RetryProperties;
 import com.netflix.spinnaker.kork.sql.config.SqlRetryProperties;
 import com.netflix.spinnaker.kork.sql.test.SqlTestUtil;
-import org.junit.jupiter.api.AfterEach;
-
 import java.time.Clock;
-
+import org.junit.jupiter.api.AfterEach;
 
 public class SqlTaskRepositoryTest extends TaskRepositoryTck {
 
