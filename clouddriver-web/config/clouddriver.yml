@@ -148,109 +148,109 @@ appengine:
 cloudrun:
   enabled: false
 
-google:
-  enabled: false
-  baseImageProjects:
-    - centos-cloud
-    - coreos-cloud
-    - cos-cloud
-    - debian-cloud
-    - opensuse-cloud
-    - rhel-cloud
-    - suse-cloud
-    - ubuntu-os-cloud
-    - windows-cloud
-  accounts:
-    - name: my-gcp-account
-      project: my-gcp-project
-      required: true # Forces the account to be valid at startup
-      alphaListed: true # Project is enabled for alpha features at GCP
-      jsonPath: /root/.gcp/my-gcp-project.json
-      imageProjects: # Additional projects that can images for deploying
-        - my-gcp-image-project
-  defaults:
-    fallbackInstanceTypeDisks:
-      - type: pd-ssd
-        sizeGb: 10
-    instanceTypeDisks:
-      - instanceType: n1-standard-1
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-standard-2
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-standard-4
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-standard-8
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-standard-16
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-standard-32
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: f1-micro
-        supportsLocalSSD: false
-        disks:
-          - type: pd-standard
-            sizeGb: 10
-      - instanceType: g1-small
-        supportsLocalSSD: false
-        disks:
-          - type: pd-standard
-            sizeGb: 10
-      - instanceType: n1-highmem-2
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-highmem-4
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-highmem-8
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-highmem-16
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-highmem-32
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-highcpu-2
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-highcpu-4
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-highcpu-8
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-highcpu-16
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: n1-highcpu-32
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
-      - instanceType: default
-        disks:
-          - type: pd-ssd
-            sizeGb: 10
+#google:
+#  enabled: false
+#  baseImageProjects:
+#    - centos-cloud
+#    - coreos-cloud
+#    - cos-cloud
+#    - debian-cloud
+#    - opensuse-cloud
+#    - rhel-cloud
+#    - suse-cloud
+#    - ubuntu-os-cloud
+#    - windows-cloud
+#  accounts:
+#    - name: my-gcp-account
+#      project: my-gcp-project
+#      required: true # Forces the account to be valid at startup
+#      alphaListed: true # Project is enabled for alpha features at GCP
+#      jsonPath: /root/.gcp/my-gcp-project.json
+#      imageProjects: # Additional projects that can images for deploying
+#        - my-gcp-image-project
+#  defaults:
+#    fallbackInstanceTypeDisks:
+#      - type: pd-ssd
+#        sizeGb: 10
+#    instanceTypeDisks:
+#      - instanceType: n1-standard-1
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-standard-2
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-standard-4
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-standard-8
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-standard-16
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-standard-32
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: f1-micro
+#        supportsLocalSSD: false
+#        disks:
+#          - type: pd-standard
+#            sizeGb: 10
+#      - instanceType: g1-small
+#        supportsLocalSSD: false
+#        disks:
+#          - type: pd-standard
+#            sizeGb: 10
+#      - instanceType: n1-highmem-2
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-highmem-4
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-highmem-8
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-highmem-16
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-highmem-32
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-highcpu-2
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-highcpu-4
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-highcpu-8
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-highcpu-16
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: n1-highcpu-32
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
+#      - instanceType: default
+#        disks:
+#          - type: pd-ssd
+#            sizeGb: 10
 
 kubernetes:
   enabled: false
