@@ -11,6 +11,8 @@ redis:
   parallelism: -1
 
 services:
+  fiat:
+    baseUrl: http://spin-fiat:7003
   front50:
     baseUrl: http://spin-front50:8080
 
@@ -371,10 +373,10 @@ spring:
         on-profile: ro
 
 redis:
-  connection: ${services.redisRo.baseUrl:${services.redis.baseUrl}}
+  connection: ${services.redis.baseUrl:redis://localhost:6379}
 
 caching:
-  writeEnabled: false
+  writeEnabled: true
 
 ---
 # This profile is used in HA deployments for a clouddriver that handles mutating requests from
@@ -386,4 +388,4 @@ spring:
         on-profile: rw
 
 caching:
-  writeEnabled: false
+  writeEnabled: true
