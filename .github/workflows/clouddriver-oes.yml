@@ -112,15 +112,15 @@ jobs:
     steps:
     - name: Che4ck out repository code
       uses: actions/checkout@v3
-      with:
-        repository: opsmx/cve-target
-        ref: refs/heads/main
+      # with:
+      #   repository: opsmx/cve-target
+      #   ref: refs/heads/main
     - run: | 
-        
-          echo artifactId: ${{ needs.build-clouddriver.outputs.clouddriver }} > default/service-settings/clouddriver.yml
-                  git config user.name github-actions
-           git config user.email github-actions@github.com
-          git add .
-          git commit -m "updating master Branch images into service settings"
+         echo "   "
+          # echo artifactId: ${{ needs.build-clouddriver.outputs.clouddriver }} > default/service-settings/clouddriver.yml
+          #         git config user.name github-actions
+          #  git config user.email github-actions@github.com
+          # git add .
+          # git commit -m "updating master Branch images into service settings"
       env:
          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
