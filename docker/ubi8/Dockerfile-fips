@@ -55,7 +55,7 @@ RUN yum -y install  wget git
 
 # AWS CLI
 RUN yum -y install python3-pip && \
-    pip3 install --upgrade pyyaml==5.4 s3cmd==${AWS_CLI_S3_CMD} python-magic \
+    pip3 install --upgrade cryptography==42.0.5 grpcio==1.62.2 urllib3==2.2.1 pyyaml==5.4 s3cmd==${AWS_CLI_S3_CMD} python-magic \
      && yum -y remove  python3-pip && \
     yum clean all
 
