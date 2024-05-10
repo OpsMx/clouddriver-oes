@@ -78,7 +78,7 @@ class AmazonLoadBalancerInstanceStateCachingAgent implements CachingAgent, Healt
 
   @Override
   String getProviderName() {
-    AwsProvider.PROVIDER_NAME
+    AwsProvider.name
   }
 
   @Override

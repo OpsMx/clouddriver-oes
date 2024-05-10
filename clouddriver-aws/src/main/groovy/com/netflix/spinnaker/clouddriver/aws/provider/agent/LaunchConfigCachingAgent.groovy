@@ -65,7 +65,7 @@ class LaunchConfigCachingAgent implements CachingAgent, AccountAware, DriftMetri
 
   @Override
   String getProviderName() {
-    return AwsProvider.PROVIDER_NAME
+    return AwsProvider.name
   }
 
   @Override

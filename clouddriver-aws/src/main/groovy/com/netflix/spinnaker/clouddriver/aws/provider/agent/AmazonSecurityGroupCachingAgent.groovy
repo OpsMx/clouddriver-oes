@@ -78,7 +78,7 @@ class AmazonSecurityGroupCachingAgent implements CachingAgent, OnDemandAgent, Ac
 
   @Override
   String getProviderName() {
-    AwsInfrastructureProvider.PROVIDER_NAME
+    AwsInfrastructureProvider.name
   }
 
   @Override

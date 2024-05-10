@@ -231,7 +231,7 @@ class AzureNetworkClient extends AzureBaseClient {
       log.error("getAppGatewaysAll -> Unexpected exception ", e)
     }
 
-    result
+    result as Collection<AzureAppGatewayDescription>
   }
 
   /**

@@ -18,9 +18,6 @@ package com.netflix.spinnaker.clouddriver.cloudfoundry.deploy.ops;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.atIndex;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.*;
 
 import com.netflix.spinnaker.clouddriver.cloudfoundry.client.CloudFoundryApiException;

@@ -129,24 +129,40 @@ final class ReplacerTest {
   private KubernetesManifest getReplicaSetWithContainers() {
     String replicaSet =
         json.serialize(
-            new V1ReplicaSetBuilder()
-                .withNewSpec()
-                .withNewTemplate()
-                .withNewSpec()
-                .addToContainers(
-                    new V1ContainerBuilder()
-                        .withName("my-image-with-tag")
-                        .withImage("gcr.io/my-repository/my-image:my-tag")
-                        .build())
-                .addToContainers(
-                    new V1ContainerBuilder()
-                        .withName("my-image-without-tag")
-                        .withImage("gcr.io/my-other-repository/some-image")
-                        .build())
-                .endSpec()
-                .endTemplate()
-                .endSpec()
-                .build());
+            new V1ReplicaSet()
+                .spec(
+                    new V1ReplicaSetSpec()
+                        .template(
+                            new V1PodTemplateSpec()
+                                .spec(
+                                    new V1PodSpec()
+                                        .addContainersItem(
+                                            new V1Container()
+                                                .name("my-image-with-tag")
+                                                .image("gcr.io/my-repository/my-image:my-tag"))
+                                        .addContainersItem(
+                                            new V1Container()
+                                                .name("my-image-without-tag")
+                                                .image("gcr.io/my-other-repository/some-image")))))
+            //            new V1ReplicaSetBuilder()
+            //                .withNewSpec()
+            //                .withNewTemplate()
+            //                .withNewSpec()
+            //                .addToContainers(
+            //                    new V1ContainerBuilder()
+            //                        .withName("my-image-with-tag")
+            //                        .withImage("gcr.io/my-repository/my-image:my-tag")
+            //                        .build())
+            //                .addToContainers(
+            //                    new V1ContainerBuilder()
+            //                        .withName("my-image-without-tag")
+            //                        .withImage("gcr.io/my-other-repository/some-image")
+            //                        .build())
+            //                .endSpec()
+            //                .endTemplate()
+            //                .endSpec()
+            //                .build()
+            );
     return gson.fromJson(replicaSet, KubernetesManifest.class);
   }
 
@@ -215,18 +231,30 @@ final class ReplacerTest {
   private KubernetesManifest getPod() {
     String pod =
         json.serialize(
-            new V1PodBuilder()
-                .withNewSpec()
-                .addNewContainer()
-                .withName("my-image-with-tag")
-                .withImage("gcr.io/my-repository/my-image:my-tag")
-                .endContainer()
-                .addNewContainer()
-                .withName("my-image-without-tag")
-                .withImage("gcr.io/my-other-repository/some-image")
-                .endContainer()
-                .endSpec()
-                .build());
+            new V1Pod()
+                .spec(
+                    new V1PodSpec()
+                        .addContainersItem(
+                            new V1Container()
+                                .name("my-image-with-tag")
+                                .image("gcr.io/my-repository/my-image:my-tag"))
+                        .addContainersItem(
+                            new V1Container()
+                                .name("my-image-without-tag")
+                                .image("gcr.io/my-other-repository/some-image")))
+            //            new V1PodBuilder()
+            //                .withNewSpec()
+            //                .addNewContainer()
+            //                .withName("my-image-with-tag")
+            //                .withImage("gcr.io/my-repository/my-image:my-tag")
+            //                .endContainer()
+            //                .addNewContainer()
+            //                .withName("my-image-without-tag")
+            //                .withImage("gcr.io/my-other-repository/some-image")
+            //                .endContainer()
+            //                .endSpec()
+            //                .build()
+            );
     return gson.fromJson(pod, KubernetesManifest.class);
   }
 
@@ -387,42 +415,70 @@ final class ReplacerTest {
   private KubernetesManifest getReplicaSetWithVolumes() {
     String replicaSet =
         json.serialize(
-            new V1ReplicaSetBuilder()
-                .withNewSpec()
-                .withNewTemplate()
-                .withNewSpec()
-                .addToVolumes(
-                    new V1VolumeBuilder()
-                        .withConfigMap(
-                            new V1ConfigMapVolumeSourceBuilder()
-                                .withName("first-config-map")
-                                .build())
-                        .build())
-                .addToVolumes(
-                    new V1VolumeBuilder()
-                        .withConfigMap(
-                            new V1ConfigMapVolumeSourceBuilder()
-                                .withName("second-config-map")
-                                .build())
-                        .build())
-                .addToVolumes(
-                    new V1VolumeBuilder()
-                        .withSecret(
-                            new V1SecretVolumeSourceBuilder()
-                                .withSecretName("first-secret")
-                                .build())
-                        .build())
-                .addToVolumes(
-                    new V1VolumeBuilder()
-                        .withSecret(
-                            new V1SecretVolumeSourceBuilder()
-                                .withSecretName("second-secret")
-                                .build())
-                        .build())
-                .endSpec()
-                .endTemplate()
-                .endSpec()
-                .build());
+            new V1ReplicaSet()
+                .spec(
+                    new V1ReplicaSetSpec()
+                        .template(
+                            new V1PodTemplateSpec()
+                                .spec(
+                                    new V1PodSpec()
+                                        .addVolumesItem(
+                                            new V1Volume()
+                                                .configMap(
+                                                    new V1ConfigMapVolumeSource()
+                                                        .name("first-config-map")))
+                                        .addVolumesItem(
+                                            new V1Volume()
+                                                .configMap(
+                                                    new V1ConfigMapVolumeSource()
+                                                        .name("second-config-map")))
+                                        .addVolumesItem(
+                                            new V1Volume()
+                                                .secret(
+                                                    new V1SecretVolumeSource()
+                                                        .secretName("first-secret")))
+                                        .addVolumesItem(
+                                            new V1Volume()
+                                                .secret(
+                                                    new V1SecretVolumeSource()
+                                                        .secretName("second-secret"))))))
+            //            new V1ReplicaSetBuilder()
+            //                .withNewSpec()
+            //                .withNewTemplate()
+            //                .withNewSpec()
+            //                .addToVolumes(
+            //                    new V1VolumeBuilder()
+            //                        .withConfigMap(
+            //                            new V1ConfigMapVolumeSourceBuilder()
+            //                                .withName("first-config-map")
+            //                                .build())
+            //                        .build())
+            //                .addToVolumes(
+            //                    new V1VolumeBuilder()
+            //                        .withConfigMap(
+            //                            new V1ConfigMapVolumeSourceBuilder()
+            //                                .withName("second-config-map")
+            //                                .build())
+            //                        .build())
+            //                .addToVolumes(
+            //                    new V1VolumeBuilder()
+            //                        .withSecret(
+            //                            new V1SecretVolumeSourceBuilder()
+            //                                .withSecretName("first-secret")
+            //                                .build())
+            //                        .build())
+            //                .addToVolumes(
+            //                    new V1VolumeBuilder()
+            //                        .withSecret(
+            //                            new V1SecretVolumeSourceBuilder()
+            //                                .withSecretName("second-secret")
+            //                                .build())
+            //                        .build())
+            //                .endSpec()
+            //                .endTemplate()
+            //                .endSpec()
+            //                .build()
+            );
     return gson.fromJson(replicaSet, KubernetesManifest.class);
   }
 
@@ -600,49 +656,83 @@ final class ReplacerTest {
   private KubernetesManifest getReplicaSetWithProjectedVolumes() {
     String replicaSet =
         json.serialize(
-            new V1ReplicaSetBuilder()
-                .withNewSpec()
-                .withNewTemplate()
-                .withNewSpec()
-                .addToVolumes(
-                    new V1VolumeBuilder()
-                        .withName("first-projected-volume")
-                        .withProjected(
-                            new V1ProjectedVolumeSourceBuilder()
-                                .build()
-                                .addSourcesItem(
-                                    new V1VolumeProjectionBuilder()
-                                        .withConfigMap(
-                                            new V1ConfigMapProjectionBuilder()
-                                                .withName("first-config-map")
-                                                .build())
-                                        .build())
-                                .addSourcesItem(
-                                    new V1VolumeProjectionBuilder()
-                                        .withConfigMap(
-                                            new V1ConfigMapProjectionBuilder()
-                                                .withName("second-config-map")
-                                                .build())
-                                        .build())
-                                .addSourcesItem(
-                                    new V1VolumeProjectionBuilder()
-                                        .withSecret(
-                                            new V1SecretProjectionBuilder()
-                                                .withName("first-secret")
-                                                .build())
-                                        .build())
-                                .addSourcesItem(
-                                    new V1VolumeProjectionBuilder()
-                                        .withSecret(
-                                            new V1SecretProjectionBuilder()
-                                                .withName("second-secret")
-                                                .build())
-                                        .build()))
-                        .build())
-                .endSpec()
-                .endTemplate()
-                .endSpec()
-                .build());
+            new V1ReplicaSet()
+                .spec(
+                    new V1ReplicaSetSpec()
+                        .template(
+                            new V1PodTemplateSpec()
+                                .spec(
+                                    new V1PodSpec()
+                                        .addVolumesItem(
+                                            new V1Volume()
+                                                .name("first-projected-volume")
+                                                .projected(
+                                                    new V1ProjectedVolumeSource()
+                                                        .addSourcesItem(
+                                                            new V1VolumeProjection()
+                                                                .configMap(
+                                                                    new V1ConfigMapProjection()
+                                                                        .name("first-config-map")))
+                                                        .addSourcesItem(
+                                                            new V1VolumeProjection()
+                                                                .configMap(
+                                                                    new V1ConfigMapProjection()
+                                                                        .name("second-config-map")))
+                                                        .addSourcesItem(
+                                                            new V1VolumeProjection()
+                                                                .secret(
+                                                                    new V1SecretProjection()
+                                                                        .name("first-secret")))
+                                                        .addSourcesItem(
+                                                            new V1VolumeProjection()
+                                                                .secret(
+                                                                    new V1SecretProjection()
+                                                                        .name(
+                                                                            "second-secret"))))))))
+            //            new V1ReplicaSetBuilder()
+            //                .withNewSpec()
+            //                .withNewTemplate()
+            //                .withNewSpec()
+            //                .addToVolumes(
+            //                    new V1VolumeBuilder()
+            //                        .withName("first-projected-volume")
+            //                        .withProjected(
+            //                            new V1ProjectedVolumeSourceBuilder()
+            //                                .build()
+            //                                .addSourcesItem(
+            //                                    new V1VolumeProjectionBuilder()
+            //                                        .withConfigMap(
+            //                                            new V1ConfigMapProjectionBuilder()
+            //                                                .withName("first-config-map")
+            //                                                .build())
+            //                                        .build())
+            //                                .addSourcesItem(
+            //                                    new V1VolumeProjectionBuilder()
+            //                                        .withConfigMap(
+            //                                            new V1ConfigMapProjectionBuilder()
+            //                                                .withName("second-config-map")
+            //                                                .build())
+            //                                        .build())
+            //                                .addSourcesItem(
+            //                                    new V1VolumeProjectionBuilder()
+            //                                        .withSecret(
+            //                                            new V1SecretProjectionBuilder()
+            //                                                .withName("first-secret")
+            //                                                .build())
+            //                                        .build())
+            //                                .addSourcesItem(
+            //                                    new V1VolumeProjectionBuilder()
+            //                                        .withSecret(
+            //                                            new V1SecretProjectionBuilder()
+            //                                                .withName("second-secret")
+            //                                                .build())
+            //                                        .build()))
+            //                        .build())
+            //                .endSpec()
+            //                .endTemplate()
+            //                .endSpec()
+            //                .build()
+            );
     KubernetesManifest kubernetesManifest = gson.fromJson(replicaSet, KubernetesManifest.class);
     return kubernetesManifest;
   }
@@ -812,81 +902,142 @@ final class ReplacerTest {
   private KubernetesManifest getReplicaSetWithKeyRefs() {
     String replicaSet =
         json.serialize(
-            new V1ReplicaSetBuilder()
-                .withNewSpec()
-                .withNewTemplate()
-                .withNewSpec()
-                .addToContainers(
-                    new V1ContainerBuilder()
-                        .withName("my-image-with-tag")
-                        .withEnv(
-                            new V1EnvVarBuilder()
-                                .withValueFrom(
-                                    new V1EnvVarSourceBuilder()
-                                        .withConfigMapKeyRef(
-                                            new V1ConfigMapKeySelectorBuilder()
-                                                .withName("first-name")
-                                                .withKey("first-key")
-                                                .build())
-                                        .build())
-                                .build(),
-                            new V1EnvVarBuilder()
-                                .withValueFrom(
-                                    new V1EnvVarSourceBuilder()
-                                        .withConfigMapKeyRef(
-                                            new V1ConfigMapKeySelectorBuilder()
-                                                // Second key also from the first config map
-                                                .withName("first-name")
-                                                .withKey("second-key")
-                                                .build())
-                                        .build())
-                                .build(),
-                            new V1EnvVarBuilder()
-                                .withValueFrom(
-                                    new V1EnvVarSourceBuilder()
-                                        .withConfigMapKeyRef(
-                                            new V1ConfigMapKeySelectorBuilder()
-                                                .withName("second-name")
-                                                .withKey("third-key")
-                                                .build())
-                                        .build())
-                                .build(),
-                            new V1EnvVarBuilder()
-                                .withValueFrom(
-                                    new V1EnvVarSourceBuilder()
-                                        .withSecretKeyRef(
-                                            new V1SecretKeySelectorBuilder()
-                                                .withName("first-name")
-                                                .withKey("first-key")
-                                                .build())
-                                        .build())
-                                .build(),
-                            new V1EnvVarBuilder()
-                                .withValueFrom(
-                                    new V1EnvVarSourceBuilder()
-                                        .withSecretKeyRef(
-                                            new V1SecretKeySelectorBuilder()
-                                                .withName("second-name")
-                                                .withKey("second-key")
-                                                .build())
-                                        .build())
-                                .build(),
-                            new V1EnvVarBuilder()
-                                .withValueFrom(
-                                    new V1EnvVarSourceBuilder()
-                                        .withSecretKeyRef(
-                                            new V1SecretKeySelectorBuilder()
-                                                // Third key also from the second secret
-                                                .withName("second-name")
-                                                .withKey("third-key")
-                                                .build())
-                                        .build())
-                                .build())
-                        .build())
-                .endSpec()
-                .endTemplate()
-                .endSpec()
-                .build());
+            new V1ReplicaSet()
+                .spec(
+                    new V1ReplicaSetSpec()
+                        .template(
+                            new V1PodTemplateSpec()
+                                .spec(
+                                    new V1PodSpec()
+                                        .addContainersItem(
+                                            new V1Container()
+                                                .name("my-image-with-tag")
+                                                .addEnvItem(
+                                                    new V1EnvVar()
+                                                        .valueFrom(
+                                                            new V1EnvVarSource()
+                                                                .configMapKeyRef(
+                                                                    new V1ConfigMapKeySelector()
+                                                                        .name("first-name")
+                                                                        .key("first-key"))))
+                                                .addEnvItem(
+                                                    new V1EnvVar()
+                                                        .valueFrom(
+                                                            new V1EnvVarSource()
+                                                                .configMapKeyRef(
+                                                                    new V1ConfigMapKeySelector()
+                                                                        .name("first-name")
+                                                                        .key("second-key"))))
+                                                .addEnvItem(
+                                                    new V1EnvVar()
+                                                        .valueFrom(
+                                                            new V1EnvVarSource()
+                                                                .configMapKeyRef(
+                                                                    new V1ConfigMapKeySelector()
+                                                                        .name("second-name")
+                                                                        .key("third-key"))))
+                                                .addEnvItem(
+                                                    new V1EnvVar()
+                                                        .valueFrom(
+                                                            new V1EnvVarSource()
+                                                                .secretKeyRef(
+                                                                    new V1SecretKeySelector()
+                                                                        .name("first-name")
+                                                                        .key("first-key"))))
+                                                .addEnvItem(
+                                                    new V1EnvVar()
+                                                        .valueFrom(
+                                                            new V1EnvVarSource()
+                                                                .secretKeyRef(
+                                                                    new V1SecretKeySelector()
+                                                                        .name("second-name")
+                                                                        .key("second-key"))))
+                                                .addEnvItem(
+                                                    new V1EnvVar()
+                                                        .valueFrom(
+                                                            new V1EnvVarSource()
+                                                                .secretKeyRef(
+                                                                    new V1SecretKeySelector()
+                                                                        .name("second-name")
+                                                                        .key("third-key"))))))))
+            //            new V1ReplicaSetBuilder()
+            //                .withNewSpec()
+            //                .withNewTemplate()
+            //                .withNewSpec()
+            //                .addToContainers(
+            //                    new V1ContainerBuilder()
+            //                        .withName("my-image-with-tag")
+            //                        .withEnv(
+            //                            new V1EnvVarBuilder()
+            //                                .withValueFrom(
+            //                                    new V1EnvVarSourceBuilder()
+            //                                        .withConfigMapKeyRef(
+            //                                            new V1ConfigMapKeySelectorBuilder()
+            //                                                .withName("first-name")
+            //                                                .withKey("first-key")
+            //                                                .build())
+            //                                        .build())
+            //                                .build(),
+            //                            new V1EnvVarBuilder()
+            //                                .withValueFrom(
+            //                                    new V1EnvVarSourceBuilder()
+            //                                        .withConfigMapKeyRef(
+            //                                            new V1ConfigMapKeySelectorBuilder()
+            //                                                // Second key also from the first
+            // config map
+            //                                                .withName("first-name")
+            //                                                .withKey("second-key")
+            //                                                .build())
+            //                                        .build())
+            //                                .build(),
+            //                            new V1EnvVarBuilder()
+            //                                .withValueFrom(
+            //                                    new V1EnvVarSourceBuilder()
+            //                                        .withConfigMapKeyRef(
+            //                                            new V1ConfigMapKeySelectorBuilder()
+            //                                                .withName("second-name")
+            //                                                .withKey("third-key")
+            //                                                .build())
+            //                                        .build())
+            //                                .build(),
+            //                            new V1EnvVarBuilder()
+            //                                .withValueFrom(
+            //                                    new V1EnvVarSourceBuilder()
+            //                                        .withSecretKeyRef(
+            //                                            new V1SecretKeySelectorBuilder()
+            //                                                .withName("first-name")
+            //                                                .withKey("first-key")
+            //                                                .build())
+            //                                        .build())
+            //                                .build(),
+            //                            new V1EnvVarBuilder()
+            //                                .withValueFrom(
+            //                                    new V1EnvVarSourceBuilder()
+            //                                        .withSecretKeyRef(
+            //                                            new V1SecretKeySelectorBuilder()
+            //                                                .withName("second-name")
+            //                                                .withKey("second-key")
+            //                                                .build())
+            //                                        .build())
+            //                                .build(),
+            //                            new V1EnvVarBuilder()
+            //                                .withValueFrom(
+            //                                    new V1EnvVarSourceBuilder()
+            //                                        .withSecretKeyRef(
+            //                                            new V1SecretKeySelectorBuilder()
+            //                                                // Third key also from the second
+            // secret
+            //                                                .withName("second-name")
+            //                                                .withKey("third-key")
+            //                                                .build())
+            //                                        .build())
+            //                                .build())
+            //                        .build())
+            //                .endSpec()
+            //                .endTemplate()
+            //                .endSpec()
+            //                .build()
+            );
     return gson.fromJson(replicaSet, KubernetesManifest.class);
   }
 
@@ -1054,41 +1205,75 @@ final class ReplacerTest {
   private KubernetesManifest getReplicaSetWithEnvFrom() {
     String replicaSet =
         json.serialize(
-            new V1ReplicaSetBuilder()
-                .withNewSpec()
-                .withNewTemplate()
-                .withNewSpec()
-                .addToContainers(
-                    new V1ContainerBuilder()
-                        .withName("my-image-with-tag")
-                        .withEnvFrom(
-                            // Give them both the same name so we can ensure we don't mix
-                            // secrets/configMaps
-                            new V1EnvFromSourceBuilder()
-                                .withConfigMapRef(
-                                    new V1ConfigMapEnvSourceBuilder()
-                                        .withName("config-map-name")
-                                        .build())
-                                .build(),
-                            new V1EnvFromSourceBuilder()
-                                .withConfigMapRef(
-                                    new V1ConfigMapEnvSourceBuilder()
-                                        .withName("shared-name")
-                                        .build())
-                                .build(),
-                            new V1EnvFromSourceBuilder()
-                                .withSecretRef(
-                                    new V1SecretEnvSourceBuilder().withName("secret-name").build())
-                                .build(),
-                            new V1EnvFromSourceBuilder()
-                                .withSecretRef(
-                                    new V1SecretEnvSourceBuilder().withName("shared-name").build())
-                                .build())
-                        .build())
-                .endSpec()
-                .endTemplate()
-                .endSpec()
-                .build());
+            new V1ReplicaSet()
+                .spec(
+                    new V1ReplicaSetSpec()
+                        .template(
+                            new V1PodTemplateSpec()
+                                .spec(
+                                    new V1PodSpec()
+                                        .addContainersItem(
+                                            new V1Container()
+                                                .name("my-image-with-tag")
+                                                .addEnvFromItem(
+                                                    new V1EnvFromSource()
+                                                        .configMapRef(
+                                                            new V1ConfigMapEnvSource()
+                                                                .name("config-map-name")))
+                                                .addEnvFromItem(
+                                                    new V1EnvFromSource()
+                                                        .configMapRef(
+                                                            new V1ConfigMapEnvSource()
+                                                                .name("shared-name")))
+                                                .addEnvFromItem(
+                                                    new V1EnvFromSource()
+                                                        .secretRef(
+                                                            new V1SecretEnvSource()
+                                                                .name("secret-name")))
+                                                .addEnvFromItem(
+                                                    new V1EnvFromSource()
+                                                        .secretRef(
+                                                            new V1SecretEnvSource()
+                                                                .name("shared-name")))))))
+            //            new V1ReplicaSetBuilder()
+            //                .withNewSpec()
+            //                .withNewTemplate()
+            //                .withNewSpec()
+            //                .addToContainers(
+            //                    new V1ContainerBuilder()
+            //                        .withName("my-image-with-tag")
+            //                        .withEnvFrom(
+            //                            // Give them both the same name so we can ensure we don't
+            // mix
+            //                            // secrets/configMaps
+            //                            new V1EnvFromSourceBuilder()
+            //                                .withConfigMapRef(
+            //                                    new V1ConfigMapEnvSourceBuilder()
+            //                                        .withName("config-map-name")
+            //                                        .build())
+            //                                .build(),
+            //                            new V1EnvFromSourceBuilder()
+            //                                .withConfigMapRef(
+            //                                    new V1ConfigMapEnvSourceBuilder()
+            //                                        .withName("shared-name")
+            //                                        .build())
+            //                                .build(),
+            //                            new V1EnvFromSourceBuilder()
+            //                                .withSecretRef(
+            //                                    new
+            // V1SecretEnvSourceBuilder().withName("secret-name").build())
+            //                                .build(),
+            //                            new V1EnvFromSourceBuilder()
+            //                                .withSecretRef(
+            //                                    new
+            // V1SecretEnvSourceBuilder().withName("shared-name").build())
+            //                                .build())
+            //                        .build())
+            //                .endSpec()
+            //                .endTemplate()
+            //                .endSpec()
+            //                .build()
+            );
     return gson.fromJson(replicaSet, KubernetesManifest.class);
   }
 
@@ -1240,30 +1425,46 @@ final class ReplacerTest {
   private KubernetesManifest getHpaForDeployment() {
     String hpa =
         json.serialize(
-            new V1HorizontalPodAutoscalerBuilder()
-                .withNewSpec()
-                .withScaleTargetRef(
-                    new V1CrossVersionObjectReferenceBuilder()
-                        .withKind("deployment")
-                        .withName("my-deployment")
-                        .build())
-                .endSpec()
-                .build());
+            new V1HorizontalPodAutoscaler()
+                .spec(
+                    new V1HorizontalPodAutoscalerSpec()
+                        .scaleTargetRef(
+                            new V1CrossVersionObjectReference()
+                                .name("my-deployment")
+                                .kind("deployment")))
+            //            new V1HorizontalPodAutoscalerBuilder()
+            //                .withNewSpec()
+            //                .withScaleTargetRef(
+            //                    new V1CrossVersionObjectReferenceBuilder()
+            //                        .withKind("deployment")
+            //                        .withName("my-deployment")
+            //                        .build())
+            //                .endSpec()
+            //                .build()
+            );
     return gson.fromJson(hpa, KubernetesManifest.class);
   }
 
   private KubernetesManifest getHpaForReplicaSet() {
     String hpa =
         json.serialize(
-            new V1HorizontalPodAutoscalerBuilder()
-                .withNewSpec()
-                .withScaleTargetRef(
-                    new V1CrossVersionObjectReferenceBuilder()
-                        .withKind("replicaSet")
-                        .withName("my-replica-set")
-                        .build())
-                .endSpec()
-                .build());
+            new V1HorizontalPodAutoscaler()
+                .spec(
+                    new V1HorizontalPodAutoscalerSpec()
+                        .scaleTargetRef(
+                            new V1CrossVersionObjectReference()
+                                .kind("replicaSet")
+                                .name("my-replica-set")))
+            //            new V1HorizontalPodAutoscalerBuilder()
+            //                .withNewSpec()
+            //                .withScaleTargetRef(
+            //                    new V1CrossVersionObjectReferenceBuilder()
+            //                        .withKind("replicaSet")
+            //                        .withName("my-replica-set")
+            //                        .build())
+            //                .endSpec()
+            //                .build()
+            );
     return gson.fromJson(hpa, KubernetesManifest.class);
   }
 
@@ -1319,8 +1520,8 @@ final class ReplacerTest {
             NAMESPACE,
             ACCOUNT);
 
-    V1beta1CronJob replacedCronJob =
-        KubernetesCacheDataConverter.getResource(replaceResult.getManifest(), V1beta1CronJob.class);
+    V1CronJob replacedCronJob =
+        KubernetesCacheDataConverter.getResource(replaceResult.getManifest(), V1CronJob.class);
     assertThat(
             replacedCronJob
                 .getSpec()
@@ -1364,8 +1565,8 @@ final class ReplacerTest {
       expectedImageAndTag = "gcr.io/my-repository/my-image:expected-tag";
     }
 
-    V1beta1CronJob replacedCronJob =
-        KubernetesCacheDataConverter.getResource(replaceResult.getManifest(), V1beta1CronJob.class);
+    V1CronJob replacedCronJob =
+        KubernetesCacheDataConverter.getResource(replaceResult.getManifest(), V1CronJob.class);
     assertThat(
             replacedCronJob
                 .getSpec()
@@ -1387,26 +1588,48 @@ final class ReplacerTest {
   private KubernetesManifest getCronJob() {
     String cronJob =
         json.serialize(
-            new V1beta1CronJobBuilder()
-                .withNewSpec()
-                .withNewJobTemplate()
-                .withNewSpec()
-                .withNewTemplate()
-                .withNewSpec()
-                .addNewContainer()
-                .withName("my-image-with-tag")
-                .withImage("gcr.io/my-repository/my-image:my-tag")
-                .endContainer()
-                .addNewContainer()
-                .withName("my-image-without-tag")
-                .withImage("gcr.io/my-other-repository/some-image")
-                .endContainer()
-                .endSpec()
-                .endTemplate()
-                .endSpec()
-                .endJobTemplate()
-                .endSpec()
-                .build());
+            new V1CronJob()
+                .spec(
+                    new V1CronJobSpec()
+                        .jobTemplate(
+                            new V1JobTemplateSpec()
+                                .spec(
+                                    new V1JobSpec()
+                                        .template(
+                                            new V1PodTemplateSpec()
+                                                .spec(
+                                                    new V1PodSpec()
+                                                        .addContainersItem(
+                                                            new V1Container()
+                                                                .name("my-image-with-tag")
+                                                                .image(
+                                                                    "gcr.io/my-repository/my-image:my-tag"))
+                                                        .addContainersItem(
+                                                            new V1Container()
+                                                                .name("my-image-without-tag")
+                                                                .image(
+                                                                    "gcr.io/my-other-repository/some-image")))))))
+            //            new V1beta1CronJobBuilder()
+            //                .withNewSpec()
+            //                .withNewJobTemplate()
+            //                .withNewSpec()
+            //                .withNewTemplate()
+            //                .withNewSpec()
+            //                .addNewContainer()
+            //                .withName("my-image-with-tag")
+            //                .withImage("gcr.io/my-repository/my-image:my-tag")
+            //                .endContainer()
+            //                .addNewContainer()
+            //                .withName("my-image-without-tag")
+            //                .withImage("gcr.io/my-other-repository/some-image")
+            //                .endContainer()
+            //                .endSpec()
+            //                .endTemplate()
+            //                .endSpec()
+            //                .endJobTemplate()
+            //                .endSpec()
+            //                .build()
+            );
 
     return gson.fromJson(cronJob, KubernetesManifest.class);
   }
@@ -1414,22 +1637,39 @@ final class ReplacerTest {
   private KubernetesManifest getCronJobWithOneContainerWithImageTag() {
     String cronJob =
         json.serialize(
-            new V1beta1CronJobBuilder()
-                .withNewSpec()
-                .withNewJobTemplate()
-                .withNewSpec()
-                .withNewTemplate()
-                .withNewSpec()
-                .addNewContainer()
-                .withName("my-image-with-tag")
-                .withImage("gcr.io/my-repository/my-image:original-tag")
-                .endContainer()
-                .endSpec()
-                .endTemplate()
-                .endSpec()
-                .endJobTemplate()
-                .endSpec()
-                .build());
+            new V1CronJob()
+                .spec(
+                    new V1CronJobSpec()
+                        .jobTemplate(
+                            new V1JobTemplateSpec()
+                                .spec(
+                                    new V1JobSpec()
+                                        .template(
+                                            new V1PodTemplateSpec()
+                                                .spec(
+                                                    new V1PodSpec()
+                                                        .addContainersItem(
+                                                            new V1Container()
+                                                                .image(
+                                                                    "gcr.io/my-repository/my-image:original-tag")
+                                                                .name("my-image-with-tag")))))))
+            //            new V1beta1CronJobBuilder()
+            //                .withNewSpec()
+            //                .withNewJobTemplate()
+            //                .withNewSpec()
+            //                .withNewTemplate()
+            //                .withNewSpec()
+            //                .addNewContainer()
+            //                .withName("my-image-with-tag")
+            //                .withImage("gcr.io/my-repository/my-image:original-tag")
+            //                .endContainer()
+            //                .endSpec()
+            //                .endTemplate()
+            //                .endSpec()
+            //                .endJobTemplate()
+            //                .endSpec()
+            //                .build()
+            );
 
     return gson.fromJson(cronJob, KubernetesManifest.class);
   }

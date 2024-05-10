@@ -113,10 +113,12 @@ final class KubectlJobExecutorTest {
       assertTrue(kubectlJobExecutor.getRetryRegistry().isPresent());
       RetryRegistry retryRegistry = kubectlJobExecutor.getRetryRegistry().get();
       assertThat(retryRegistry.getAllRetries().size()).isEqualTo(1);
-      assertThat(retryRegistry.getAllRetries().get(0).getName()).isEqualTo("mock-account");
+      assertThat(retryRegistry.getAllRetries().stream().toList().get(0).getName())
+          .isEqualTo("mock-account");
 
       // verify retry metrics
-      Retry.Metrics retryMetrics = retryRegistry.getAllRetries().get(0).getMetrics();
+      Retry.Metrics retryMetrics =
+          retryRegistry.getAllRetries().stream().toList().get(0).getMetrics();
       assertThat(retryMetrics.getNumberOfSuccessfulCallsWithRetryAttempt()).isEqualTo(0);
       // in this test, the action succeeded without retries. So number of unique calls == 1.
       assertThat(retryMetrics.getNumberOfSuccessfulCallsWithoutRetryAttempt()).isEqualTo(1);
@@ -278,10 +280,12 @@ final class KubectlJobExecutorTest {
     assertTrue(kubectlJobExecutor.getRetryRegistry().isPresent());
     RetryRegistry retryRegistry = kubectlJobExecutor.getRetryRegistry().get();
     assertThat(retryRegistry.getAllRetries().size()).isEqualTo(1);
-    assertThat(retryRegistry.getAllRetries().get(0).getName()).isEqualTo("mock-account");
+    assertThat(retryRegistry.getAllRetries().stream().toList().get(0).getName())
+        .isEqualTo("mock-account");
 
     // verify retry metrics
-    Retry.Metrics retryMetrics = retryRegistry.getAllRetries().get(0).getMetrics();
+    Retry.Metrics retryMetrics =
+        retryRegistry.getAllRetries().stream().toList().get(0).getMetrics();
     assertThat(retryMetrics.getNumberOfSuccessfulCallsWithRetryAttempt()).isEqualTo(0);
     assertThat(retryMetrics.getNumberOfSuccessfulCallsWithoutRetryAttempt()).isEqualTo(0);
     // in this test, all threads failed. So number of unique failed calls == 1 per thread.
@@ -370,10 +374,12 @@ final class KubectlJobExecutorTest {
     assertTrue(kubectlJobExecutor.getRetryRegistry().isPresent());
     RetryRegistry retryRegistry = kubectlJobExecutor.getRetryRegistry().get();
     assertThat(retryRegistry.getAllRetries().size()).isEqualTo(1);
-    assertThat(retryRegistry.getAllRetries().get(0).getName()).isEqualTo("mock-account");
+    assertThat(retryRegistry.getAllRetries().stream().toList().get(0).getName())
+        .isEqualTo("mock-account");
 
     // verify retry metrics
-    Retry.Metrics retryMetrics = retryRegistry.getAllRetries().get(0).getMetrics();
+    Retry.Metrics retryMetrics =
+        retryRegistry.getAllRetries().stream().toList().get(0).getMetrics();
     assertThat(retryMetrics.getNumberOfSuccessfulCallsWithRetryAttempt()).isEqualTo(0);
     assertThat(retryMetrics.getNumberOfSuccessfulCallsWithoutRetryAttempt()).isEqualTo(0);
     assertThat(retryMetrics.getNumberOfFailedCallsWithRetryAttempt()).isEqualTo(0);
@@ -443,10 +449,12 @@ final class KubectlJobExecutorTest {
     assertTrue(kubectlJobExecutor.getRetryRegistry().isPresent());
     RetryRegistry retryRegistry = kubectlJobExecutor.getRetryRegistry().get();
     assertThat(retryRegistry.getAllRetries().size()).isEqualTo(1);
-    assertThat(retryRegistry.getAllRetries().get(0).getName()).isEqualTo("mock-account");
+    assertThat(retryRegistry.getAllRetries().stream().toList().get(0).getName())
+        .isEqualTo("mock-account");
 
     // verify retry metrics
-    Retry.Metrics retryMetrics = retryRegistry.getAllRetries().get(0).getMetrics();
+    Retry.Metrics retryMetrics =
+        retryRegistry.getAllRetries().stream().toList().get(0).getMetrics();
     // in this test, the action succeeded eventually. So number of unique calls == 1.
     assertThat(retryMetrics.getNumberOfSuccessfulCallsWithRetryAttempt()).isEqualTo(1);
     assertThat(retryMetrics.getNumberOfSuccessfulCallsWithoutRetryAttempt()).isEqualTo(0);

@@ -38,6 +38,10 @@ plugins {
 
 allprojects {
   apply plugin: 'io.spinnaker.project'
+  repositories {mavenCentral()}
+  tasks.withType(Copy).all {
+    duplicatesStrategy 'exclude'
+  }
 }
 
 subprojects {
@@ -99,12 +103,19 @@ subprojects {
     logger.info("Enabling mavenLocal")
     repositories {
       mavenLocal()
+       maven{
+        url "https://nexus.opsmx.net/repository/maven-snapshots/"
+          credentials {
+                    username = "NEXUS_USERNAME"
+                    password = "NEXUS_PASSWORD"
+                         }
+      }
     }
   }
 
   tasks.withType(JavaCompile).configureEach {
     javaCompiler = javaToolchains.compilerFor {
-      languageVersion = JavaLanguageVersion.of(11)
+      languageVersion = JavaLanguageVersion.of(17)
     }
   }
   tasks.withType(Test).configureEach {

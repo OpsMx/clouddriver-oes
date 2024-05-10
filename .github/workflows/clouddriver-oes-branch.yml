@@ -1,0 +1,134 @@
+name: Branch Build clouddriver with local branch
+
+on:
+  workflow_call:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      org:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Organisation name'
+        # Default value if no value is explicitly provided
+        default: 'opsmx'
+        # Input has to be provided for the workflow to run
+        required: true
+        # The data type of the input
+        type: string 
+      branch:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Branch name'
+        # Default value if no value is explicitly provided
+        default: 'master'
+        # Input has to be provided for the workflow to run
+        required: true
+        # The data type of the input
+        type: string 
+ 
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
+  CONTAINER_REGISTRY: quay.io/opsmxpublic
+
+jobs:
+  build-clouddriver:
+    runs-on: ubuntu-latest
+    outputs:
+      clouddriver: ${{ steps.get-build-name.outputs.clouddriver }}
+    steps:
+      - uses: actions/checkout@v2
+        with:          
+          repository: ${{ inputs.org }}/clouddriver-oes
+          ref: refs/heads/${{ inputs.branch }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo ::set-output name=REPO::ubi8-clouddriver-cve
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d')"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: |
+        
+        
+          sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i settings.gradle
+          sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i settings.gradle
+          sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i build.gradle
+          sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
+     
+          ./gradlew --no-daemon -PenableCrossCompilerPlugin=true clouddriver-web:installDist -x test 
+          
+          #./gradlew --no-daemon clouddriver-web:installDist -x test
+          
+            #extra_opts='"--add-opens=java.base/sun.net=ALL-UNNAMED" "--add-exports=java.base/sun.net=ALL-UNNAMED" "--add-opens=java.base/java.time=ALL-UNNAMED"'
+            
+            
+            extra_opts='"-Djava.security.egd=file:/dev/./urandom" "-Dspring.config.import=optional:/opt/spinnaker/config/" "--add-opens=java.base/sun.net=ALL-UNNAMED" "--add-exports=java.base/sun.net=ALL-UNNAMED" "--add-opens=java.base/java.time=ALL-UNNAMED" "--add-exports=java.base/sun.security.rsa=ALL-UNNAMED" "--add-exports=java.base/sun.security.pkcs=ALL-UNNAMED" "--add-exports=java.base/sun.security.x509=ALL-UNNAMED"'
+            
+            extra_opts_escaped=$(sed 's/[\/&]/\\&/g' <<< "$extra_opts")
+              
+            echo $extra_opts_escaped
+            
+            #sed "s/^\(DEFAULT_JVM_OPTS=\'.*\)\'$/\1 $extra_opts_escaped\'/" -i clouddriver-web/build/install/clouddriver/bin/clouddriver               
+            
+                sed "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$extra_opts_escaped'/"  -i clouddriver-web/build/install/clouddriver/bin/clouddriver
+                
+              cat clouddriver-web/build/install/clouddriver/bin/clouddriver
+              
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: |
+            TARGETARCH=amd64
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"
+      - name: dockerBuildpushjaeger
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: |
+            TARGETARCH=amd64
+          file: docker/ubi8/Dockerfile-dev
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"            
+      - id: get-build-name
+        run: |
+            imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+            echo "clouddriver=$imageName" >> $GITHUB_OUTPUT
+  outputs:
+    runs-on: ubuntu-latest
+    needs: [build-clouddriver]
+    steps:
+    - name: Che4ck out repository code
+      uses: actions/checkout@v3
+      with:
+        repository: opsmx/cve-target
+        ref: refs/heads/main
+    - run: | 
+        
+          echo artifactId: ${{ needs.build-clouddriver.outputs.clouddriver }} > default/service-settings/clouddriver.yml
+                  git config user.name github-actions
+           git config user.email github-actions@github.com
+          git add .
+          git commit -m "updating master Branch images into service settings"
+          #git push --force
+          #git push https://yugaa22:$GITHUB_TOKEN@github.com/opsmx/cve-target.git # This does not work either
+      env:
+         GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}

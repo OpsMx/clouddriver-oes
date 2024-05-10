@@ -15,7 +15,7 @@
  */
 package com.netflix.spinnaker.clouddriver.alicloud.provider.agent;
 
-import static org.junit.Assert.assertTrue;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -29,7 +29,7 @@ import com.netflix.spinnaker.clouddriver.alicloud.cache.Keys;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 

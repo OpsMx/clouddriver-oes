@@ -60,7 +60,7 @@ class AmazonVpcCachingAgent implements CachingAgent, AccountAware {
 
   @Override
   String getProviderName() {
-    AwsInfrastructureProvider.PROVIDER_NAME
+    AwsInfrastructureProvider.name
   }
 
   @Override

@@ -22,7 +22,7 @@ import com.netflix.spinnaker.clouddriver.cache.SearchableProvider
 import com.netflix.spinnaker.clouddriver.security.BaseProvider
 
 class AppengineProvider extends BaseProvider implements SearchableProvider {
-  public static final String PROVIDER_NAME = AppengineProvider.name
+  public final String PROVIDER_NAME = AppengineProvider.name
 
   final Map<String, String> urlMappingTemplates = Collections.emptyMap()
   final Map<SearchableProvider.SearchableResource, SearchableProvider.SearchResultHydrator> searchResultHydrators = Collections.emptyMap()

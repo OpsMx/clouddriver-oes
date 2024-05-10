@@ -61,7 +61,7 @@ class AmazonElasticIpCachingAgent implements CachingAgent, AccountAware, CustomS
 
   @Override
   String getProviderName() {
-    AwsInfrastructureProvider.PROVIDER_NAME
+    AwsInfrastructureProvider.name
   }
 
   @Override

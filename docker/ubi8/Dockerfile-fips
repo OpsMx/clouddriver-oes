@@ -1,0 +1,119 @@
+FROM registry.access.redhat.com/ubi8/ubi:8.8 as java-builder
+LABEL maintainer="OpsMx"
+
+ARG JAVA_PACKAGE=java-17-openjdk-jmods
+RUN yum -y update && yum -y install --nodocs ${JAVA_PACKAGE}
+
+# Build a custom JRE.
+# For now, we will include all modules.  We could try to remove the ones
+# we don't need to reduce image size and security attack surface.
+WORKDIR /jrebuild
+RUN java --list-modules | cut -d'@' -f1 > modules
+RUN jlink --output runtime --add-modules `paste -sd, - < modules` --compress 2 --vm server
+
+# Build a minimal base image with our custom Java installed.
+
+FROM registry.access.redhat.com/ubi8/ubi:8.8 AS awscli-install
+RUN yum install -y unzip
+RUN curl https://awscli.amazonaws.com/awscli-exe-linux-`uname -m`.zip -o awscliv2.zip
+RUN unzip awscliv2.zip
+RUN ./aws/install
+
+FROM registry.access.redhat.com/ubi8/ubi:8.8 AS java-base
+LABEL maintainer="OpsMx"
+COPY --from=java-builder /jrebuild/runtime /opsmx-java-runtime
+COPY --from=awscli-install /usr/local/aws-cli /usr/local/aws-cli/
+RUN ln -sf /usr/local/aws-cli/v2/current/bin/aws /usr/local/bin/aws && ln -sf /usr/local/aws-cli/v2/current/bin/aws_completer /usr/local/bin/aws_completer
+ARG OPSMXUSER=1001
+ENV JAVA_HOME=/opsmx-java-runtime \
+    PATH=${PATH}:/opsmx-java-runtime/bin \
+    WORK_DIR=/opsmx/workdir \
+    CONF_DIR=/opsmx/conf
+
+# Enabling fips mode
+RUN fips-mode-setup --enable
+
+# Setting crypto policies to FIPS
+RUN update-crypto-policies --set FIPS
+
+RUN yum install -y python38
+ARG TARGETARCH
+
+
+ENV KUBECTL_RELEASE=1.22.0
+ENV AWS_CLI_S3_CMD=2.0.2
+ENV AWS_AIM_AUTHENTICATOR_VERSION=0.6.14
+ENV GOOGLE_CLOUD_SDK_VERSION=468.0.0
+ENV ECR_TOKEN_VERSION=v1.0.2
+
+ENV PATH "$PATH:/usr/local/bin/:/opt/google-cloud-sdk/bin/:/usr/local/bin/aws-iam-authenticator"
+
+USER root
+#RUN yum -y install bash jq  tar unzip wget procps  java-17-openjdk-devel.x86_64 vim  net-tools curl git
+
+RUN yum -y install  wget git
+
+# AWS CLI
+RUN yum -y install python3-pip && \
+    pip3 install --upgrade pyyaml==5.4 s3cmd==${AWS_CLI_S3_CMD} python-magic \
+     && yum -y remove  python3-pip && \
+    yum clean all
+
+
+RUN   wget -nv https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
+  && mkdir -p /opt \
+  && tar -xzf google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C /opt \
+  && rm google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
+  && CLOUDSDK_PYTHON="python3" /opt/google-cloud-sdk/install.sh --usage-reporting=false --bash-completion=false \
+     --additional-components app-engine-java app-engine-go gke-gcloud-auth-plugin \
+  && rm -rf ~/.config/gcloud \
+  && rm -rf /opt/google-cloud-sdk/.install/.backup
+
+# kubectl + AWS IAM authenticator
+RUN wget https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_RELEASE}/bin/linux/${TARGETARCH}/kubectl \
+  && chmod +x kubectl \
+  && mv ./kubectl /usr/local/bin/kubectl \
+  && wget -O aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v${AWS_AIM_AUTHENTICATOR_VERSION}/aws-iam-authenticator_${AWS_AIM_AUTHENTICATOR_VERSION}_linux_${TARGETARCH} \
+	&& chmod +x ./aws-iam-authenticator \
+	&& mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator\
+    && ln -sf /usr/local/bin/aws-iam-authenticator /usr/local/bin/heptio-authenticator-aws
+
+COPY clouddriver-web/build/install/clouddriver /opt/clouddriver
+
+
+
+#RUN yum -y remove  tar  curl
+#RUN yum -y remove  vim  jq unzip
+RUN yum -y remove clean all && rm -rf /var/cache
+
+RUN adduser spinnaker
+RUN mkdir -p /opt/clouddriver/plugins
+
+
+#custom plugin zip files adding
+ARG CUSTOMPLUGIN_RELEASEORG
+ENV CUSTOMPLUGIN_RELEASEORG=$CUSTOMPLUGIN_RELEASEORG
+
+ARG CUSTOMPLUGIN_RELEASEREPO
+ENV CUSTOMPLUGIN_RELEASEREPO=$CUSTOMPLUGIN_RELEASEREPO
+
+ARG CUSTOMPLUGIN_RELEASEVERSION
+ENV CUSTOMPLUGIN_RELEASEVERSION=$CUSTOMPLUGIN_RELEASEVERSION
+
+
+
+RUN wget -O Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip -c https://github.com/${CUSTOMPLUGIN_RELEASEORG}/${CUSTOMPLUGIN_RELEASEREPO}/releases/download/${CUSTOMPLUGIN_RELEASEVERSION}/armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}.zip -P /opt/clouddriver/plugins
+RUN mv Armory.armory-observability-plugin-${CUSTOMPLUGIN_RELEASEVERSION}-SNAPSHOT.zip /opt/clouddriver/plugins/
+
+RUN chmod -R 777 /opt/clouddriver/plugins/
+RUN chown -R spinnaker:spinnaker /opt/
+RUN yum -y remove tar vim vi
+RUN chown -R spinnaker:spinnaker /opt/
+RUN mkdir -p /etc/pki/tls/certs
+RUN chmod -R 777 /etc/pki/tls/certs
+RUN chmod -R 777 /var/
+RUN chown -R spinnaker:spinnaker /var
+USER spinnaker
+ENV SLEEP_TIME=10s
+CMD  sleep $SLEEP_TIME ; "/opt/clouddriver/bin/clouddriver"
+#CMD  sleep 180s ; "/opt/clouddriver/bin/clouddriver"

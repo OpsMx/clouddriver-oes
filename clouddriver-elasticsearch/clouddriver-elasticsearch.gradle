@@ -3,19 +3,26 @@ dependencies {
   implementation project(":clouddriver-core")
   implementation project(":clouddriver-security")
 
-  implementation "com.netflix.frigga:frigga"
+  implementation "com.netflix.frigga:frigga:0.26.0"
   implementation "io.searchbox:jest:6.3.1"
   implementation "io.spinnaker.kork:kork-exceptions"
   implementation "io.spinnaker.kork:kork-retrofit"
   implementation "io.spinnaker.kork:kork-security"
-  implementation "com.squareup.retrofit:retrofit"
-  implementation "org.codehaus.groovy:groovy"
-  implementation "org.elasticsearch:elasticsearch"
+  implementation "com.squareup.retrofit:retrofit:1.9.0"
+  implementation "org.apache.groovy:groovy"
+  implementation ("org.elasticsearch:elasticsearch:8.11.3") {
+     exclude group: "org.elasticsearch",module: "elasticsearch-x-content"
+  }
+  implementation "org.yaml:snakeyaml:2.0"
   implementation "org.springframework.boot:spring-boot-starter-web"
+  implementation("org.elasticsearch:elasticsearch-x-content:8.11.3"){
+    exclude group: "org.yaml", module: "snakeyaml"
+  }
 
+  testImplementation "org.assertj:assertj-core"
   testImplementation "org.testcontainers:elasticsearch"
-  testImplementation "cglib:cglib-nodep"
-  testImplementation "org.objenesis:objenesis"
+  testImplementation "cglib:cglib-nodep:3.3.0"
+  testImplementation "org.objenesis:objenesis:3.3"
   testImplementation "org.spockframework:spock-core"
   testImplementation "org.spockframework:spock-spring"
   testImplementation "org.springframework:spring-test"

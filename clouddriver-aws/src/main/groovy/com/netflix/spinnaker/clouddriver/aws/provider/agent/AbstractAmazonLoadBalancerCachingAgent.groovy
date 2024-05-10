@@ -75,7 +75,7 @@ abstract class AbstractAmazonLoadBalancerCachingAgent implements CachingAgent, O
 
   @Override
   String getProviderName() {
-    AwsProvider.PROVIDER_NAME
+    AwsProvider.name
   }
 
   @Override

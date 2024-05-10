@@ -219,7 +219,7 @@ public class ProviderHelpers {
     agentProviders.ifPresent(
         providers ->
             providers.stream()
-                .filter(it -> it.supports(AwsProvider.PROVIDER_NAME))
+                .filter(it -> it.supports(AwsProvider.class.getName()))
                 .forEach(provider -> newlyAddedAgents.addAll(provider.agents(credentials))));
     return new BuildResult(newlyAddedAgents, publicRegions);
   }

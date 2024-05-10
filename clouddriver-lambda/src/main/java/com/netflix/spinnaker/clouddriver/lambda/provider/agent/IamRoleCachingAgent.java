@@ -78,7 +78,7 @@ public class IamRoleCachingAgent implements CachingAgent, CustomScheduledAgent {
 
   @Override
   public String getProviderName() {
-    return AwsProvider.PROVIDER_NAME;
+    return AwsProvider.class.getName();
   }
 
   @Override

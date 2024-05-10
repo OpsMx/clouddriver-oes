@@ -30,12 +30,13 @@ import com.netflix.spinnaker.clouddriver.model.JobState;
 import com.netflix.spinnaker.clouddriver.security.AccountCredentialsProvider;
 import io.kubernetes.client.openapi.models.V1Job;
 import io.kubernetes.client.openapi.models.V1Pod;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import org.apache.commons.lang3.NotImplementedException;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,12 +83,13 @@ public class KubernetesJobProvider implements JobProvider<KubernetesJobStatus> {
             .map(m -> KubernetesCacheDataConverter.getResource(m, V1Pod.class))
             .sorted(
                 (p1, p2) -> {
-                  DateTime dtDefault = new DateTime(0);
-                  DateTime time1 =
+                  OffsetDateTime dtDefault =
+                      OffsetDateTime.of(1970, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+                  OffsetDateTime time1 =
                       p1.getStatus() != null
                           ? Optional.ofNullable(p1.getStatus().getStartTime()).orElse(dtDefault)
                           : dtDefault;
-                  DateTime time2 =
+                  OffsetDateTime time2 =
                       p2.getStatus() != null
                           ? Optional.ofNullable(p2.getStatus().getStartTime()).orElse(dtDefault)
                           : dtDefault;

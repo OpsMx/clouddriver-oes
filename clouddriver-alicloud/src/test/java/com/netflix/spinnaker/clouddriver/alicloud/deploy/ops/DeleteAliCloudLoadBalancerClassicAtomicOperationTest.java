@@ -24,7 +24,7 @@ import com.aliyuncs.slb.model.v20140515.DescribeLoadBalancersResponse;
 import com.netflix.spinnaker.clouddriver.alicloud.deploy.description.UpsertAliCloudLoadBalancerDescription;
 import java.util.ArrayList;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 

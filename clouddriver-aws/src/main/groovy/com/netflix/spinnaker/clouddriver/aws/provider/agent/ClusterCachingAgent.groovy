@@ -116,7 +116,7 @@ class ClusterCachingAgent implements CachingAgent, OnDemandAgent, AccountAware, 
 
   @Override
   String getProviderName() {
-    AwsProvider.PROVIDER_NAME
+    AwsProvider.name
   }
 
   @Override
@@ -141,7 +141,7 @@ class ClusterCachingAgent implements CachingAgent, OnDemandAgent, AccountAware, 
 
   @Override
   Optional<Map<String, String>> getCacheKeyPatterns() {
-    return Optional.of([
+    return Optional.ofNullable([
       (SERVER_GROUPS.ns): Keys.getServerGroupKey('*', '*', account.name, region)
     ])
   }

@@ -12,7 +12,7 @@ public class ClusterCleanupAgent extends AbstractClusterCleanupAgent {
 
   @Override
   public String getProviderName() {
-    return TitusCachingProvider.PROVIDER_NAME;
+    return TitusCachingProvider.class.getName();
   }
 
   @Override

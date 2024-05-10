@@ -15,9 +15,9 @@
  */
 package com.netflix.spinnaker.clouddriver.alicloud.cache;
 
-import static org.junit.Assert.assertTrue;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class KeysTest {
 

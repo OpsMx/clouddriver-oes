@@ -20,7 +20,7 @@ package com.netflix.spinnaker.clouddriver.aws.provider
 import com.netflix.spinnaker.clouddriver.security.BaseProvider
 
 class AwsCleanupProvider extends BaseProvider {
-  public static final String PROVIDER_NAME = AwsCleanupProvider.name
+  public final String PROVIDER_NAME = AwsCleanupProvider.name
 
   @Override
   String getProviderName() {

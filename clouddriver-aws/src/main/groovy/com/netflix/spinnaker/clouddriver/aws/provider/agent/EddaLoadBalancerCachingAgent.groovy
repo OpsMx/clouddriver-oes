@@ -57,7 +57,7 @@ class EddaLoadBalancerCachingAgent implements CachingAgent, HealthProvidingCachi
 
   @Override
   String getProviderName() {
-    AwsProvider.PROVIDER_NAME
+    AwsProvider.name
   }
 
   @Override

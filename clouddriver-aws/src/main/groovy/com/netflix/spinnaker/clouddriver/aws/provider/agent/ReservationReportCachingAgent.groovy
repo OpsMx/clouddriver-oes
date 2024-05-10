@@ -141,7 +141,7 @@ class ReservationReportCachingAgent implements CachingAgent, CustomScheduledAgen
 
   @Override
   String getProviderName() {
-    AwsProvider.PROVIDER_NAME
+    AwsProvider.name
   }
 
   @Override

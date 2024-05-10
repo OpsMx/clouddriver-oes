@@ -15,7 +15,7 @@
  */
 package com.netflix.spinnaker.clouddriver.alicloud.deploy.converters;
 
-import static org.junit.Assert.assertTrue;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spinnaker.clouddriver.alicloud.deploy.description.UpsertAliCloudLoadBalancerDescription;
@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UpsertAliCloudLoadBalancerAtomicOperationConverterTest extends CommonConverter {
 

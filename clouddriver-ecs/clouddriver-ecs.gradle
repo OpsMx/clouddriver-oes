@@ -23,11 +23,11 @@ dependencies {
   annotationProcessor "org.projectlombok:lombok"
   testAnnotationProcessor "org.projectlombok:lombok"
 
-  implementation "com.amazonaws:aws-java-sdk"
+  implementation "com.amazonaws:aws-java-sdk:1.12.433"
   implementation "com.github.ben-manes.caffeine:guava"
   implementation "com.netflix.awsobjectmapper:awsobjectmapper"
-  implementation "com.netflix.frigga:frigga"
-  implementation "com.netflix.spectator:spectator-api"
+  implementation "com.netflix.frigga:frigga:0.26.0"
+  implementation "com.netflix.spectator:spectator-api:1.5.3"
   implementation "io.spinnaker.fiat:fiat-api:$fiatVersion"
   implementation "io.spinnaker.fiat:fiat-core:$fiatVersion"
   implementation "io.spinnaker.kork:kork-artifacts"
@@ -35,23 +35,23 @@ dependencies {
   implementation "io.spinnaker.kork:kork-credentials-api"
   implementation "io.spinnaker.kork:kork-exceptions"
   implementation "io.spinnaker.kork:kork-moniker"
-  implementation "com.squareup.okhttp:okhttp"
-  implementation "com.squareup.okhttp:okhttp-apache"
-  implementation "com.squareup.okhttp:okhttp-urlconnection"
-  implementation "com.squareup.retrofit:converter-jackson"
-  implementation "com.squareup.retrofit:retrofit"
+  implementation "com.squareup.okhttp:okhttp:2.7.5"
+  implementation "com.squareup.okhttp:okhttp-apache:2.7.5"
+  implementation "com.squareup.okhttp:okhttp-urlconnection:2.7.5"
+  implementation "com.squareup.retrofit:converter-jackson:1.9.0"
+  implementation "com.squareup.retrofit:retrofit:1.9.0"
   implementation "commons-io:commons-io"
   implementation "org.apache.commons:commons-lang3"
   implementation "org.apache.httpcomponents:httpclient"
   implementation "org.apache.httpcomponents:httpcore"
-  implementation "org.codehaus.groovy:groovy"
+  implementation "org.apache.groovy:groovy"
   implementation "org.springframework.boot:spring-boot-starter-test"
   implementation "org.springframework.boot:spring-boot-starter-web"
 
-  testImplementation "cglib:cglib-nodep"
+  testImplementation "cglib:cglib-nodep:3.3.0"
   testImplementation "org.mockito:mockito-core"
-  testImplementation "org.objenesis:objenesis"
-  testImplementation "org.spockframework:spock-core"
+  testImplementation "org.objenesis:objenesis:2.5.1"
+  testImplementation "org.spockframework:spock-core:2.4-M1-groovy-4.0"
   testImplementation "org.spockframework:spock-spring"
 
   integrationImplementation project(":clouddriver-web")
@@ -61,7 +61,7 @@ dependencies {
   integrationImplementation sourceSets.test.output
   integrationImplementation sourceSets.main.output
   integrationImplementation ("io.rest-assured:rest-assured:4.0.0") {
-    exclude group: "org.codehaus.groovy", module: "groovy" // use kork's version
+    exclude group: "org.apache.groovy", module: "groovy" // use kork's version
   }
 }
 

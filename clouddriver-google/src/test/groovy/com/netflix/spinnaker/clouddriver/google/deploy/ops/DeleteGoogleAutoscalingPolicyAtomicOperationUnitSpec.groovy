@@ -138,7 +138,7 @@ class DeleteGoogleAutoscalingPolicyAtomicOperationUnitSpec extends Specification
           "compute.regionInstanceGroupManagers.setAutoHealingPolicies",
           [scope: "regional", region: REGION])
 
-    @Subject def operation = Spy(DeleteGoogleAutoscalingPolicyAtomicOperation, constructorArgs: [description, googleClusterProviderMock, operationPollerMock, atomicOperationsRegistry, orchestrationProcessorMock])    
+    @Subject def operation = Spy(DeleteGoogleAutoscalingPolicyAtomicOperation, constructorArgs: [description, googleClusterProviderMock, operationPollerMock, atomicOperationsRegistry, orchestrationProcessorMock])
     operation.registry = registry
 
     when:

@@ -19,4 +19,9 @@ package com.netflix.spinnaker.clouddriver.google.deploy.exception
 import groovy.transform.InheritConstructors
 
 @InheritConstructors
-class GoogleOperationTimedOutException extends GoogleOperationException {}
+class GoogleOperationTimedOutException extends GoogleOperationException {
+
+  public GoogleOperationTimedOutException(String message) {
+    super(message)
+  }
+}

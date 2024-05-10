@@ -61,7 +61,7 @@ class AmazonKeyPairCachingAgent implements CachingAgent, AccountAware, CustomSch
 
   @Override
   String getProviderName() {
-    AwsInfrastructureProvider.PROVIDER_NAME
+    AwsInfrastructureProvider.name
   }
 
   @Override

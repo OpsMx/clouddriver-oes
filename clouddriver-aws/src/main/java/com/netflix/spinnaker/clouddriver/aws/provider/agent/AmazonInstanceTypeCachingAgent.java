@@ -214,7 +214,7 @@ public class AmazonInstanceTypeCachingAgent implements CachingAgent, AccountAwar
 
   @Override
   public String getProviderName() {
-    return AwsInfrastructureProvider.PROVIDER_NAME;
+    return AwsInfrastructureProvider.class.getName();
   }
 
   @Override

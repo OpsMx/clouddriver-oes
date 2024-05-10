@@ -19,4 +19,9 @@ package com.netflix.spinnaker.clouddriver.google.deploy.exception
 import groovy.transform.InheritConstructors
 
 @InheritConstructors
-class GoogleResourceNotFoundException extends GoogleOperationException {}
+class GoogleResourceNotFoundException extends GoogleOperationException {
+
+  public GoogleResourceNotFoundException(String message) {
+    super(message)
+  }
+}

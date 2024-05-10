@@ -45,7 +45,7 @@ class CacheExecutionSpec extends Specification {
       ]
     }
     1 * cachingAgent.getCacheKeyPatterns() >> {
-      return Optional.of([
+      return Optional.ofNullable([
         "securityGroups": "securityGroups:*:test:us-west-1"
       ])
     }

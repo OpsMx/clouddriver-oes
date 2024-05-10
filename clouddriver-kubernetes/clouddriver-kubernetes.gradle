@@ -1,5 +1,5 @@
 plugins {
-  id("net.ltgt.errorprone") version "1.2.1"
+  id("net.ltgt.errorprone") version "3.0.1"
   id 'com.adarshr.test-logger' version '2.1.0'
 }
 
@@ -44,11 +44,13 @@ tasks.withType(JavaCompile) {
   options.errorprone.disable(
     "EmptyCatch",
     "MissingOverride",
+    "UnusedMethod",
+    "ReturnValueIgnored",
   )
 }
 
 dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.4.0")
+  errorprone("com.google.errorprone:error_prone_core:2.18.0")
   implementation project(":clouddriver-api")
   implementation project(":clouddriver-artifacts")
   implementation project(":clouddriver-core")
@@ -61,14 +63,13 @@ dependencies {
   annotationProcessor "org.projectlombok:lombok"
   testAnnotationProcessor "org.projectlombok:lombok"
 
-  implementation "org.codehaus.groovy:groovy"
-
+  implementation "org.apache.groovy:groovy-all:4.0.11"
   implementation "com.google.code.findbugs:jsr305"
   implementation "com.google.guava:guava"
-  implementation 'com.jayway.jsonpath:json-path:2.3.0'
+  implementation 'com.jayway.jsonpath:json-path'
   implementation "com.github.ben-manes.caffeine:guava"
   implementation "com.github.wnameless.json:json-flattener:0.11.1"
-  implementation "com.netflix.frigga:frigga"
+  implementation "com.netflix.frigga:frigga:0.26.0"
   implementation "com.netflix.spectator:spectator-api"
   implementation "io.spinnaker.fiat:fiat-core:$fiatVersion"
   implementation "io.spinnaker.kork:kork-annotations"
@@ -80,15 +81,20 @@ dependencies {
   implementation "io.spinnaker.kork:kork-moniker"
   implementation "io.spinnaker.kork:kork-secrets"
   implementation "io.spinnaker.kork:kork-security"
-  implementation "io.kubernetes:client-java"
+  implementation ("io.kubernetes:client-java:17.0.2") {
+    force = true
+  }
   implementation "org.apache.commons:commons-lang3"
   implementation "org.springframework.boot:spring-boot-actuator"
   implementation "org.springframework.boot:spring-boot-starter-web"
   implementation "org.springframework.security:spring-security-config"
   implementation "org.springframework.cloud:spring-cloud-context"
   implementation "org.springframework.cloud:spring-cloud-config-server"
+  implementation "software.amazon.awssdk:s3:2.22.12"
+  implementation "software.amazon.awssdk:secretsmanager:2.22.12"
   implementation "io.github.resilience4j:resilience4j-retry"
   implementation "io.github.resilience4j:resilience4j-micrometer"
+  implementation "joda-time:joda-time:2.12.5"
 
   testImplementation "io.spinnaker.kork:kork-test"
   testImplementation "org.apache.commons:commons-exec"
@@ -97,13 +103,13 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter-params"
   testImplementation "org.mockito:mockito-core"
   testImplementation "org.mockito:mockito-junit-jupiter"
-  testImplementation "cglib:cglib-nodep"
-  testImplementation "org.objenesis:objenesis"
+  testImplementation "cglib:cglib-nodep:3.3.0"
+  testImplementation "org.objenesis:objenesis:2.5.1"
   testImplementation "org.spockframework:spock-core"
   testImplementation "org.spockframework:spock-spring"
   testImplementation "org.springframework:spring-test"
   testImplementation "org.springframework.boot:spring-boot-test"
-  testImplementation "org.codehaus.groovy:groovy-templates"
+  testImplementation "org.apache.groovy:groovy-templates"
 
   integrationImplementation project(":clouddriver-web")
   integrationImplementation "org.springframework.boot:spring-boot-starter-test"
@@ -111,10 +117,7 @@ dependencies {
   integrationImplementation "org.testcontainers:mysql"
   integrationImplementation "org.testcontainers:junit-jupiter"
   integrationImplementation "mysql:mysql-connector-java"
-  integrationImplementation ("io.rest-assured:rest-assured:4.0.0") {
-    // Exclude groovy pulled in by rest-assured, so we use kork's version
-    exclude group: "org.codehaus.groovy", module: "groovy"
-  }
+  integrationImplementation ("io.rest-assured:rest-assured:4.0.0")
   integrationImplementation "org.yaml:snakeyaml"
 }
 
@@ -144,4 +147,12 @@ task integrationTest(type: Test) {
     showFailedStandardStreams true
     showPassed false
   }
+}
+
+tasks.withType(Tar){
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.withType(Zip){
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

@@ -21,7 +21,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netflix.spinnaker.fiat.model.resources.Permissions;
 import java.util.List;
 
-/** @see AssumeRoleAmazonCredentials */
+/**
+ * @see AssumeRoleAmazonCredentials
+ */
 public class NetflixAssumeRoleAmazonCredentials extends NetflixAmazonCredentials {
 
   /** The role to assume on the target account. */

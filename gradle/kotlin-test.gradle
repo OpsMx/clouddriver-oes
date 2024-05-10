@@ -37,7 +37,7 @@ test {
 
 compileTestKotlin {
   kotlinOptions {
-    languageVersion = "1.5"
-    jvmTarget = "11"
+    languageVersion = "1.7"
+    jvmTarget = "17"
   }
 }

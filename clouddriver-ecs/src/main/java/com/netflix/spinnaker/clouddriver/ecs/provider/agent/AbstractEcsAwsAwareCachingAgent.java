@@ -69,7 +69,7 @@ abstract class AbstractEcsAwsAwareCachingAgent<T> extends AbstractEcsCachingAgen
       AbstractEcsAwsAwareCachingAgent cachingAgent = (AbstractEcsAwsAwareCachingAgent) agent;
       ProviderCache ecsCache = providerRegistry.getProviderCache(cachingAgent.getProviderName());
 
-      String awsProviderName = AwsProvider.PROVIDER_NAME;
+      String awsProviderName = AwsProvider.class.getName();
       log.info("Setting AWS Provider: " + awsProviderName);
       ProviderCache awsCache = providerRegistry.getProviderCache(awsProviderName);
       cachingAgent.setAwsCache(awsCache);

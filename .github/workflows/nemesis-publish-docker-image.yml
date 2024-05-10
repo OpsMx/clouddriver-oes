@@ -1,0 +1,84 @@
+name: Branch Build clouddriver
+
+on:
+  workflow_call:
+  push:
+    branches:
+    - oss-upgrade-1.33.x
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
+  CONTAINER_REGISTRY: quay.io/opsmxpublic
+
+jobs:
+  build-clouddriver:
+    runs-on: ubuntu-latest
+    outputs:
+      clouddriver: ${{ steps.get-build-name.outputs.clouddriver }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo ::set-output name=REPO::ubi8-clouddriver-cve
+          echo ::set-output name=VERSION::"1.33.x-nemesis"
+          echo "::set-output name=GITHASH::$(git rev-parse --short HEAD)"
+          echo "::set-output name=BUILDDATE::$(date -u +"%Y%m%d%H%M")"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: |
+
+
+          sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i settings.gradle
+          sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i settings.gradle
+          sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i build.gradle
+          sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
+
+          ./gradlew --no-daemon -PenableCrossCompilerPlugin=true clouddriver-web:installDist -x test
+
+            extra_opts='"-Djava.security.egd=file:/dev/./urandom" "-Dspring.config.import=optional:/opt/spinnaker/config/" "--add-opens=java.base/sun.net=ALL-UNNAMED" "--add-exports=java.base/sun.net=ALL-UNNAMED" "--add-opens=java.base/java.time=ALL-UNNAMED" "--add-exports=java.base/sun.security.rsa=ALL-UNNAMED" "--add-exports=java.base/sun.security.pkcs=ALL-UNNAMED" "--add-exports=java.base/sun.security.x509=ALL-UNNAMED"'
+
+            extra_opts_escaped=$(sed 's/[\/&]/\\&/g' <<< "$extra_opts")
+
+            echo $extra_opts_escaped
+
+                sed "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$extra_opts_escaped'/"  -i clouddriver-web/build/install/clouddriver/bin/clouddriver
+
+              cat clouddriver-web/build/install/clouddriver/bin/clouddriver
+
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: |
+            TARGETARCH=amd64
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+           "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-${{ steps.build_variables.outputs.GITHASH }}-${{ steps.build_variables.outputs.BUILDDATE }}"
+
+      - id: get-build-name
+        run: |
+            imageName="${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-${{ steps.build_variables.outputs.GITHASH }}-${{ steps.build_variables.outputs.BUILDDATE }}"
+
+            echo "clouddriver=$imageName" >> $GITHUB_OUTPUT

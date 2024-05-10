@@ -2,7 +2,6 @@ package com.netflix.spinnaker.clouddriver.cloudfoundry.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import com.netflix.spinnaker.clouddriver.cloudfoundry.client.api.SpaceService;

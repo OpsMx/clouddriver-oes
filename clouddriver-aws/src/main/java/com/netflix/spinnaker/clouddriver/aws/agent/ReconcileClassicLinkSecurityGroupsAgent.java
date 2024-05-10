@@ -306,6 +306,6 @@ public class ReconcileClassicLinkSecurityGroupsAgent
 
   @Override
   public String getProviderName() {
-    return AwsCleanupProvider.PROVIDER_NAME;
+    return AwsCleanupProvider.class.getName();
   }
 }

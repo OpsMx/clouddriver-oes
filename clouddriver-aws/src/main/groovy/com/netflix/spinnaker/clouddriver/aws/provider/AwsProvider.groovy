@@ -31,7 +31,7 @@ import static com.netflix.spinnaker.clouddriver.core.provider.agent.Namespace.*
 
 class AwsProvider extends BaseProvider implements SearchableProvider, EurekaAwareProvider {
 
-  public static final String PROVIDER_NAME = AwsProvider.name
+  public final String PROVIDER_NAME = AwsProvider.name
 
   final KeyParser keyParser = new Keys()
 

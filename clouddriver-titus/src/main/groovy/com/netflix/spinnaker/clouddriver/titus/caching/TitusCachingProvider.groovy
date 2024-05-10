@@ -31,7 +31,7 @@ import javax.inject.Provider
 
 class TitusCachingProvider implements SearchableProvider, EurekaAwareProvider {
 
-  public static final String PROVIDER_NAME = TitusCachingProvider.simpleName
+  public final String PROVIDER_NAME = TitusCachingProvider.simpleName
 
   private final Collection<CachingAgent> agents
   private final KeyParser keyParser = new Keys()

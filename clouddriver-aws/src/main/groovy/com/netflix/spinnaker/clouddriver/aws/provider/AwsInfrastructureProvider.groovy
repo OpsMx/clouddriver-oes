@@ -27,7 +27,7 @@ import static com.netflix.spinnaker.clouddriver.aws.cache.Keys.Namespace.SECURIT
 class AwsInfrastructureProvider extends BaseProvider implements SearchableProvider {
   public static final TypeReference<Map<String, Object>> ATTRIBUTES = new TypeReference<Map<String, Object>>() {}
 
-  public static final String PROVIDER_NAME = AwsInfrastructureProvider.name
+  public final String PROVIDER_NAME = AwsInfrastructureProvider.name
 
   private final KeyParser keyParser = new Keys()
 

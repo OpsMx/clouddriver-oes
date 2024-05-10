@@ -69,8 +69,8 @@ class LaunchFailureNotificationAgentProviderSpec extends Specification {
 
   void "should support AwsProvider"() {
     expect:
-    agentProvider.supports(AwsProvider.PROVIDER_NAME)
-    !agentProvider.supports(AwsCleanupProvider.PROVIDER_NAME)
+    agentProvider.supports(AwsProvider.name)
+    !agentProvider.supports(AwsCleanupProvider.name)
   }
 
   void "should return an agent per region in specified account"() {

@@ -30,16 +30,18 @@ import com.netflix.spinnaker.kork.artifacts.model.Artifact;
 import io.kubernetes.client.openapi.JSON;
 import io.kubernetes.client.openapi.models.V1ConfigMapEnvSource;
 import io.kubernetes.client.openapi.models.V1Container;
-import io.kubernetes.client.openapi.models.V1ContainerBuilder;
+import io.kubernetes.client.openapi.models.V1ContainerPort;
+import io.kubernetes.client.openapi.models.V1CrossVersionObjectReference;
 import io.kubernetes.client.openapi.models.V1Deployment;
-import io.kubernetes.client.openapi.models.V1DeploymentBuilder;
 import io.kubernetes.client.openapi.models.V1DeploymentSpec;
 import io.kubernetes.client.openapi.models.V1EnvFromSource;
-import io.kubernetes.client.openapi.models.V1HorizontalPodAutoscalerBuilder;
+import io.kubernetes.client.openapi.models.V1HorizontalPodAutoscaler;
+import io.kubernetes.client.openapi.models.V1HorizontalPodAutoscalerSpec;
+import io.kubernetes.client.openapi.models.V1LabelSelector;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.openapi.models.V1ReplicaSet;
-import io.kubernetes.client.openapi.models.V1ReplicaSetBuilder;
 import io.kubernetes.client.openapi.models.V1ReplicaSetSpec;
 import java.util.Collection;
 import java.util.Optional;
@@ -423,30 +425,47 @@ final class ArtifactReplacerTest {
   private KubernetesManifest getHpa(String kind, String name) {
     String hpa =
         json.serialize(
-            new V1HorizontalPodAutoscalerBuilder()
-                .withNewMetadata()
-                .withName("my-hpa")
-                .withNamespace("default")
-                .endMetadata()
-                .withNewSpec()
-                .withNewScaleTargetRef()
-                .withApiVersion("apps/v1")
-                .withKind(kind)
-                .withName(name)
-                .endScaleTargetRef()
-                .endSpec()
-                .build());
+            new V1HorizontalPodAutoscaler()
+                .metadata(new V1ObjectMeta().name("my-hpa").namespace("default"))
+                .spec(
+                    new V1HorizontalPodAutoscalerSpec()
+                        .scaleTargetRef(
+                            new V1CrossVersionObjectReference()
+                                .apiVersion("apps/v1")
+                                .kind(kind)
+                                .name(name)))
+            //            new V1HorizontalPodAutoscalerBuilder()
+            //                .withNewMetadata()
+            //                .withName("my-hpa")
+            //                .withNamespace("default")
+            //                .endMetadata()
+            //                .withNewSpec()
+            //                .withNewScaleTargetRef()
+            //                .withApiVersion("apps/v1")
+            //                .withKind(kind)
+            //                .withName(name)
+            //                .endScaleTargetRef()
+            //                .endSpec()
+            //                .build()
+            );
     return gson.fromJson(hpa, KubernetesManifest.class);
   }
 
   private V1Container getContainer(String image) {
-    return new V1ContainerBuilder()
-        .withName("container")
-        .withImage(image)
-        .addNewPort()
-        .withContainerPort(80)
-        .endPort()
-        .build();
+    V1Container v1Container = new V1Container();
+    v1Container.image(image);
+    v1Container.name("container");
+    v1Container.addPortsItem(new V1ContainerPort().containerPort(80));
+
+    return v1Container;
+
+    //    return new V1ContainerBuilder()
+    //        .withName("container")
+    //        .withImage(image)
+    //        .addNewPort()
+    //        .withContainerPort(80)
+    //        .endPort()
+    //        .build();
   }
 
   private KubernetesManifest getDeploymentWithContainer(V1Container container) {
@@ -461,52 +480,88 @@ final class ArtifactReplacerTest {
       Collection<V1Container> containers, Collection<V1Container> initContainers) {
     String deployment =
         json.serialize(
-            new V1DeploymentBuilder()
-                .withNewMetadata()
-                .withName("my-app-deployment")
-                .withLabels(ImmutableMap.of("app", "my-app"))
-                .endMetadata()
-                .withNewSpec()
-                .withReplicas(3)
-                .withNewSelector()
-                .withMatchLabels(ImmutableMap.of("app", "my-app"))
-                .endSelector()
-                .withNewTemplate()
-                .withNewMetadata()
-                .withLabels(ImmutableMap.of("app", "my-app"))
-                .endMetadata()
-                .withNewSpec()
-                .addAllToContainers(containers)
-                .addAllToInitContainers(initContainers)
-                .endSpec()
-                .endTemplate()
-                .endSpec()
-                .build());
+            new V1Deployment()
+                .metadata(
+                    new V1ObjectMeta()
+                        .name("my-app-deployment")
+                        .labels(ImmutableMap.of("app", "my-app")))
+                .spec(
+                    new V1DeploymentSpec()
+                        .replicas(3)
+                        .selector(
+                            new V1LabelSelector().matchLabels(ImmutableMap.of("app", "my-app")))
+                        .template(
+                            new V1PodTemplateSpec()
+                                .metadata(
+                                    new V1ObjectMeta().labels(ImmutableMap.of("app", "my-app")))
+                                .spec(
+                                    new V1PodSpec()
+                                        .containers(containers.stream().toList())
+                                        .initContainers(initContainers.stream().toList()))))
+            //            new V1DeploymentBuilder()
+            //                .withNewMetadata()
+            //                .withName("my-app-deployment")
+            //                .withLabels(ImmutableMap.of("app", "my-app"))
+            //                .endMetadata()
+            //                .withNewSpec()
+            //                .withReplicas(3)
+            //                .withNewSelector()
+            //                .withMatchLabels(ImmutableMap.of("app", "my-app"))
+            //                .endSelector()
+            //                .withNewTemplate()
+            //                .withNewMetadata()
+            //                .withLabels(ImmutableMap.of("app", "my-app"))
+            //                .endMetadata()
+            //                .withNewSpec()
+            //                .addAllToContainers(containers)
+            //                .addAllToInitContainers(initContainers)
+            //                .endSpec()
+            //                .endTemplate()
+            //                .endSpec()
+            //                .build()
+            );
     return gson.fromJson(deployment, KubernetesManifest.class);
   }
 
   private KubernetesManifest getReplicaSetWithEnvFrom(String configMapRef) {
     String deployment =
         json.serialize(
-            new V1ReplicaSetBuilder()
-                .withNewMetadata()
-                .withName("my-app-deployment")
-                .endMetadata()
-                .withNewSpec()
-                .withReplicas(3)
-                .withNewTemplate()
-                .withNewSpec()
-                .addNewContainer()
-                .addNewEnvFrom()
-                .withNewConfigMapRef()
-                .withNewName(configMapRef)
-                .endConfigMapRef()
-                .endEnvFrom()
-                .endContainer()
-                .endSpec()
-                .endTemplate()
-                .endSpec()
-                .build());
+            new V1ReplicaSet()
+                .metadata(new V1ObjectMeta().name("my-app-deployment"))
+                .spec(
+                    new V1ReplicaSetSpec()
+                        .replicas(3)
+                        .template(
+                            new V1PodTemplateSpec()
+                                .spec(
+                                    new V1PodSpec()
+                                        .addContainersItem(
+                                            new V1Container()
+                                                .addEnvFromItem(
+                                                    new V1EnvFromSource()
+                                                        .configMapRef(
+                                                            new V1ConfigMapEnvSource()
+                                                                .name(configMapRef)))))))
+            //            new V1ReplicaSetBuilder()
+            //                .withNewMetadata()
+            //                .withName("my-app-deployment")
+            //                .endMetadata()
+            //                .withNewSpec()
+            //                .withReplicas(3)
+            //                .withNewTemplate()
+            //                .withNewSpec()
+            //                .addNewContainer()
+            //                .addNewEnvFrom()
+            //                .withNewConfigMapRef()
+            //                .withNewName(configMapRef)
+            //                .endConfigMapRef()
+            //                .endEnvFrom()
+            //                .endContainer()
+            //                .endSpec()
+            //                .endTemplate()
+            //                .endSpec()
+            //                .build()
+            );
     return gson.fromJson(deployment, KubernetesManifest.class);
   }
 }

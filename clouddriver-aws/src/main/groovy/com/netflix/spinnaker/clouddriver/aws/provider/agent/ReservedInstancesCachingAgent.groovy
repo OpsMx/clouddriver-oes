@@ -75,7 +75,7 @@ class ReservedInstancesCachingAgent implements CachingAgent, CustomScheduledAgen
 
   @Override
   String getProviderName() {
-    return AwsProvider.PROVIDER_NAME
+    return AwsProvider.name
   }
 
   @Override

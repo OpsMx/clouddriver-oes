@@ -93,7 +93,7 @@ class S3ArtifactCredentialsTest {
   @Autowired Registry registry;
 
   @BeforeAll
-  private static void setupOnce() {
+  public static void setupOnce() {
     assumeTrue(DockerClientFactory.instance().isDockerAvailable());
     localstack.start();
     amazonS3 =

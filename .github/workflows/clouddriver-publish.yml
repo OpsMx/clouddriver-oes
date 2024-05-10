@@ -1,0 +1,97 @@
+name: Branch Build clouddriver publish
+
+on:
+  push:
+    branches:
+    - OES-1.30.1
+ 
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
+
+jobs:
+  publish-clouddriver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+          cache: 'gradle'
+      - name: Build
+        env:
+          NEXUS_VERSION: 1-0-SNAPSHOT
+        run: |
+            
+              cat <<EOF>> patch
+              
+              version = "$NEXUS_VERSION"
+              group = 'io.spinnaker.clouddriver'
+              apply plugin: 'maven-publish'
+
+              publishing{
+                   publications{
+                       maven(MavenPublication){
+                            groupId = 'io.spinnaker.clouddriver'
+                            artifactId = 'NEXUSARTIID'
+                            version = "$NEXUS_VERSION"
+                            from components.java
+                 pom {
+                   name = 'NEXUSARTIID'
+                   description = 'A description of my library'
+                   }
+                 }
+              }
+
+              repositories {
+                 maven{
+                 name = 'nexus'
+                 url "https://nexus.opsmx.net/repository/maven-snapshots/"
+                  credentials {
+                    username = "${{ secrets.NEXUS_USERNAME }}"
+                    password = "${{ secrets.NEXUS_PASSWORD }}"
+                         }
+                     }
+                }
+               }  
+                               tasks.withType(GenerateModuleMetadata).configureEach {
+                                         suppressedValidationErrors.add('enforced-platform')
+                                       }
+
+              EOF
+             
+              ls -d */  | grep "clouddriver" | sed 's/\///g' > ds.txt
+              
+              cat ds.txt
+              
+
+              for i in $(cat ds.txt) 
+              do
+               sed  s/NEXUSARTIID/$i/g patch > patchnew
+               cat patchnew >> $i/$i.gradle
+             
+              done
+             
+              ls -l cats/ | grep '^d' | awk '{print $9}' > ds.txt
+
+              for i in $(cat ds.txt) 
+              do
+               sed  s/NEXUSARTIID/$i/g patch > patchnew
+               cat patchnew >> cats/$i/$i.gradle
+             
+              done
+ 
+             
+              sed -e '/components\.java/ s/^#*/\/\//' -i clouddriver-bom/clouddriver-bom.gradle
+              
+              
+                  sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i settings.gradle
+                  sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i settings.gradle
+                  sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i build.gradle
+                  sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
+          
+                ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test

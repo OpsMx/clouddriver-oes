@@ -31,7 +31,8 @@ class AmazonMetricDescriptor implements CloudMetricDescriptor {
   final List<Dimension> dimensions
 
   static AmazonMetricDescriptor from(Metric metric) {
-    new AmazonMetricDescriptor('aws', metric.namespace, metric.metricName, metric.dimensions)
+    new AmazonMetricDescriptor(cloudProvider: 'aws', namespace: metric.namespace ,
+      name: metric.metricName, dimensions: metric.dimensions)
   }
 
 }

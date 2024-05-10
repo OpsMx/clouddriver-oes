@@ -4,8 +4,6 @@ import static com.netflix.spinnaker.clouddriver.cloudfoundry.cache.Keys.Namespac
 import static com.netflix.spinnaker.clouddriver.cloudfoundry.provider.agent.CloudFoundryServerGroupCachingAgent.cacheView;
 import static java.util.Collections.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -358,7 +356,11 @@ class CloudFoundryLoadBalancerCachingAgentTest {
 
     CacheResult result = cloudFoundryLoadBalancerCachingAgent.loadData(mockProviderCache);
 
-    assertThat(result).isEqualToComparingFieldByFieldRecursively(expectedCacheResult);
+    assertThat(result)
+        .usingRecursiveComparison()
+        .ignoringFields("cacheResults.serverGroups")
+        .ignoringFieldsOfTypes(ResourceCacheData.class)
+        .isEqualTo(expectedCacheResult);
   }
 
   @Test

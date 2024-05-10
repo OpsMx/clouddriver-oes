@@ -89,7 +89,7 @@ public class AzureManagedImageCachingAgent
 
   @Override
   public String getProviderName() {
-    return AzureInfrastructureProvider.PROVIDER_NAME;
+    return AzureInfrastructureProvider.class.getName();
   }
 
   @Override

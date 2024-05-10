@@ -1,0 +1,24 @@
+name: Nemesis testing Build
+
+on:
+  push:
+    branches:
+    - oss-upgrade-1.33.x
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
+
+jobs:
+  branch-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu'
+          cache: 'gradle'
+      - name: Build
+        run: ./gradlew build --stacktrace

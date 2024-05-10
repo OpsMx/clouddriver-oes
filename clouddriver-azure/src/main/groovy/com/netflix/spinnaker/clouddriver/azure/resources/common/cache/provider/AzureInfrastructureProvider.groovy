@@ -28,7 +28,7 @@ import static com.netflix.spinnaker.clouddriver.cache.SearchableProvider.Searcha
 
 @ConditionalOnProperty('azure.enabled')
 class AzureInfrastructureProvider extends AgentSchedulerAware implements SearchableProvider {
-  public static final String PROVIDER_NAME = AzureInfrastructureProvider.name
+  public final String PROVIDER_NAME = AzureInfrastructureProvider.name
 
   private final AzureCloudProvider azureCloudProvider
   private final Collection<Agent> agents

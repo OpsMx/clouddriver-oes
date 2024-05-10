@@ -199,7 +199,7 @@ public class TitusStreamingUpdateAgent implements CustomScheduledAgent, CachingA
 
   @Override
   public String getProviderName() {
-    return TitusCachingProvider.PROVIDER_NAME;
+    return TitusCachingProvider.class.getName();
   }
 
   @Override

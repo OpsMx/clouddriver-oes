@@ -1,9 +1,9 @@
 plugins {
-  id("net.ltgt.errorprone") version "1.2.1"
+  id("net.ltgt.errorprone") version "3.0.1"
 }
 
 dependencies {
-  errorprone("com.google.errorprone:error_prone_core:2.4.0")
+  errorprone("com.google.errorprone:error_prone_core:2.18.0")
   implementation project(":cats:cats-core")
   implementation project(":clouddriver-api")
   implementation project(":clouddriver-core")
@@ -16,7 +16,7 @@ dependencies {
   implementation 'com.yandex.cloud:java-sdk-services:2.1.1'
   compileOnly "io.opencensus:opencensus-api"
   compileOnly "io.opencensus:opencensus-contrib-grpc-metrics"
-  implementation "org.codehaus.groovy:groovy-datetime"
+  implementation "org.apache.groovy:groovy-datetime"
   implementation "org.apache.commons:commons-lang3"
   implementation "com.netflix.frigga:frigga"
   implementation "com.netflix.spectator:spectator-api"
@@ -29,7 +29,7 @@ dependencies {
 
   testImplementation project(":clouddriver-web")
   testImplementation "cglib:cglib-nodep"
-  testImplementation "commons-fileupload:commons-fileupload:1.4"
+  testImplementation "commons-fileupload:commons-fileupload:1.5"
   testImplementation "org.apache.httpcomponents:httpmime"
   testImplementation "org.assertj:assertj-core"
   testImplementation "org.junit.jupiter:junit-jupiter-api"

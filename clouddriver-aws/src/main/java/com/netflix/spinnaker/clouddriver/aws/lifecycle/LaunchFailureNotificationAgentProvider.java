@@ -56,7 +56,7 @@ public class LaunchFailureNotificationAgentProvider implements AgentProvider {
 
   @Override
   public boolean supports(String providerName) {
-    return providerName.equalsIgnoreCase(AwsProvider.PROVIDER_NAME);
+    return providerName.equalsIgnoreCase(AwsProvider.class.getName());
   }
 
   @Override

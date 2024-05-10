@@ -23,11 +23,11 @@ import com.netflix.spinnaker.clouddriver.core.services.Front50Service;
 import com.netflix.spinnaker.clouddriver.model.Cluster;
 import com.netflix.spinnaker.clouddriver.model.ClusterProvider;
 import com.netflix.spinnaker.clouddriver.model.ServerGroup;
+import jakarta.inject.Provider;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

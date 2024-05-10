@@ -60,6 +60,6 @@ class AzureCredentialsInitializer {
       }
     }
 
-    azureAccounts
+    azureAccounts as List<AzureNamedAccountCredentials>
   }
 }

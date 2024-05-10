@@ -570,6 +570,7 @@ class DiscoverySupportUnitSpec extends Specification {
     Map<String, Object> launchConfig
     ServerGroup.InstanceCounts instanceCounts
     ServerGroup.Capacity capacity
+    Boolean isDisabled() {disabled}
     ServerGroup.ImageSummary getImageSummary() {}
     ServerGroup.ImagesSummary getImagesSummary() {}
   }

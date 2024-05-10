@@ -101,7 +101,7 @@ class LaunchFailureNotificationAgent implements RunnableAgent, CustomScheduledAg
 
   @Override
   public String getProviderName() {
-    return AwsProvider.PROVIDER_NAME;
+    return AwsProvider.class.getName();
   }
 
   @Override

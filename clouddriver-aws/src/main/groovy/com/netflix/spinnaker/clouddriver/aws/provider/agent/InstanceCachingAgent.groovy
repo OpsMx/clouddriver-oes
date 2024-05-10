@@ -74,7 +74,7 @@ class InstanceCachingAgent implements CachingAgent, AccountAware, DriftMetric {
 
   @Override
   String getProviderName() {
-    AwsProvider.PROVIDER_NAME
+    AwsProvider.name
   }
 
   @Override

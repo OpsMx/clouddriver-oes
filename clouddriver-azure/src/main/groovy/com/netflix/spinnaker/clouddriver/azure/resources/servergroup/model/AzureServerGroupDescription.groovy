@@ -62,7 +62,7 @@ class AzureServerGroupDescription extends AzureResourceOpsDescription implements
   String securityGroupName
   String subnetId /*Azure resource ID*/
   List<String> storageAccountNames
-  Boolean disabled = false
+  Boolean isDisabled = false
   List<AzureInboundPortConfig> inboundPortConfigs = []
   String vnet
   String subnet
@@ -138,6 +138,11 @@ class AzureServerGroupDescription extends AzureResourceOpsDescription implements
   @Override
   Set<String> getSecurityGroups() {
     return this.securityGroupName == null ? new HashSet<String>() : Sets.newHashSet(this.securityGroupName)
+  }
+
+  @Override
+  Boolean isDisabled() {
+    this.isDisabled
   }
 
   @Override

@@ -59,7 +59,7 @@ class Saga(
   fun isCompensating(): Boolean = events.filterIsInstance<SagaRollbackStarted>().isNotEmpty()
 
   fun getVersion(): Long {
-    return events.map { it.getMetadata().originatingVersion }.maxOrNull()?.let { it + 1 } ?: 0
+    return events.maxOfOrNull { it.getMetadata().originatingVersion }?.let { it + 1 } ?: 0
   }
 
   fun addEvent(event: SagaEvent) {

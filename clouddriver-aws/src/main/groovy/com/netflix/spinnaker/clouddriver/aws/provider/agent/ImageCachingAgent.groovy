@@ -95,7 +95,7 @@ class ImageCachingAgent implements CachingAgent, AccountAware, DriftMetric, Cust
 
   @Override
   String getProviderName() {
-    return AwsProvider.PROVIDER_NAME
+    return AwsProvider.name
   }
 
   @Override
