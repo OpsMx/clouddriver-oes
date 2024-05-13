@@ -81,6 +81,7 @@ dependencies {
   implementation "io.spinnaker.kork:kork-moniker"
   implementation "io.spinnaker.kork:kork-secrets"
   implementation "io.spinnaker.kork:kork-security"
+  implementation "io.spinnaker.kork:kork-swagger"
   implementation ("io.kubernetes:client-java:17.0.2") {
     force = true
   }
