@@ -201,14 +201,6 @@ class KubernetesKindSpec extends Specification {
         .spec(new V1CustomResourceDefinitionSpec()
           .names(new V1CustomResourceDefinitionNames().kind(kind))
           .group(group))
-//      new V1CustomResourceDefinitionBuilder()
-//        .withSpec(
-//          new V1beta1CustomResourceDefinitionSpecBuilder()
-//            .withNames(
-//              new V1beta1CustomResourceDefinitionNamesBuilder().withKind(kind).build())
-//            .withGroup(group)
-//            .build())
-//        .build()
     def kubernetesKind = KubernetesKind.fromCustomResourceDefinition(crd)
 
     then:

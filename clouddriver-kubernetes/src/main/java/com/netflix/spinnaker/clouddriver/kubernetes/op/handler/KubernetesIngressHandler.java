@@ -113,15 +113,6 @@ public class KubernetesIngressHandler extends KubernetesHandler {
   }
 
   private static List<String> attachedServices(KubernetesManifest manifest) {
-    //    if (manifest.getApiVersion().equals(EXTENSIONS_V1BETA1)) {
-    //      ExtensionsV1beta1Ingress v1beta1Ingress =
-    //          KubernetesCacheDataConverter.getResource(manifest, ExtensionsV1beta1Ingress.class);
-    //      return attachedServices(v1beta1Ingress);
-    //    } else if (manifest.getApiVersion().equals(NETWORKING_K8S_IO_V1BETA1)) {
-    //      NetworkingV1beta1Ingress v1beta1Ingress =
-    //          KubernetesCacheDataConverter.getResource(manifest, NetworkingV1beta1Ingress.class);
-    //      return attachedServices(v1beta1Ingress);
-    //    }
     if (manifest.getApiVersion().equals(NETWORKING_K8S_IO_V1)) {
       V1Ingress v1Ingress = KubernetesCacheDataConverter.getResource(manifest, V1Ingress.class);
       return attachedServices(v1Ingress);
@@ -129,54 +120,6 @@ public class KubernetesIngressHandler extends KubernetesHandler {
       throw new UnsupportedVersionException(manifest);
     }
   }
-
-  //  private static List<String> attachedServices(ExtensionsV1beta1Ingress ingress) {
-  //    Set<String> result = new HashSet<>();
-  //    ExtensionsV1beta1IngressBackend backend = ingress.getSpec().getBackend();
-  //    if (backend != null) {
-  //      result.add(backend.getServiceName());
-  //    }
-  //
-  //    List<ExtensionsV1beta1IngressRule> rules = ingress.getSpec().getRules();
-  //    rules = rules == null ? new ArrayList<>() : rules;
-  //    for (ExtensionsV1beta1IngressRule rule : rules) {
-  //      ExtensionsV1beta1HTTPIngressRuleValue http = rule.getHttp();
-  //      if (http != null) {
-  //        for (ExtensionsV1beta1HTTPIngressPath path : http.getPaths()) {
-  //          backend = path.getBackend();
-  //          if (backend != null) {
-  //            result.add(backend.getServiceName());
-  //          }
-  //        }
-  //      }
-  //    }
-  //
-  //    return new ArrayList<>(result);
-  //  }
-
-  //  private static List<String> attachedServices(NetworkingV1beta1Ingress ingress) {
-  //    Set<String> result = new HashSet<>();
-  //    NetworkingV1beta1IngressBackend backend = ingress.getSpec().getBackend();
-  //    if (backend != null) {
-  //      result.add(backend.getServiceName());
-  //    }
-  //
-  //    List<NetworkingV1beta1IngressRule> rules = ingress.getSpec().getRules();
-  //    rules = rules == null ? new ArrayList<>() : rules;
-  //    for (NetworkingV1beta1IngressRule rule : rules) {
-  //      NetworkingV1beta1HTTPIngressRuleValue http = rule.getHttp();
-  //      if (http != null) {
-  //        for (NetworkingV1beta1HTTPIngressPath path : http.getPaths()) {
-  //          backend = path.getBackend();
-  //          if (backend != null) {
-  //            result.add(backend.getServiceName());
-  //          }
-  //        }
-  //      }
-  //    }
-  //
-  //    return new ArrayList<>(result);
-  //  }
 
   private static List<String> attachedServices(V1Ingress ingress) {
     Set<String> result = new HashSet<>();
