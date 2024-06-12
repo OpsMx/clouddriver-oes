@@ -67,6 +67,12 @@ subprojects {
       implementation("org.apache.ivy:ivy:2.5.2")
       implementation("org.json:json")
       implementation("org.yaml:snakeyaml:2.0")
+      implementation("net.minidev:json-smart:2.4.9")
+      implementation("com.google.guava:guava:32.1.1-jre")
+
+      testImplementation("org.yaml:snakeyaml:2.0")
+      testImplementation("net.minidev:json-smart:2.4.9")
+      testImplementation("com.google.guava:guava:32.1.1-jre")
 
       annotationProcessor platform("io.spinnaker.kork:kork-bom:$korkVersion")
       annotationProcessor "org.projectlombok:lombok"

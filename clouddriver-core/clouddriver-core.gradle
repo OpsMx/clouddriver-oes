@@ -71,6 +71,7 @@ dependencies {
   testImplementation "org.springframework.boot:spring-boot-starter-test"
   testImplementation "com.google.cloud:google-cloud-secretmanager"
   testImplementation "io.spinnaker.kork:kork-cloud-config-server"
+  testImplementation("com.google.guava:guava:32.1.1-jre")
 }
 tasks.withType(Test).configureEach{
   jvmArgs = ['--add-opens=java.base/java.util=ALL-UNNAMED']
