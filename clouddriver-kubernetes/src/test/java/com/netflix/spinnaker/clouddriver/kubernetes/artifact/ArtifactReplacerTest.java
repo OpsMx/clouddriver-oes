@@ -433,21 +433,7 @@ final class ArtifactReplacerTest {
                             new V1CrossVersionObjectReference()
                                 .apiVersion("apps/v1")
                                 .kind(kind)
-                                .name(name)))
-            //            new V1HorizontalPodAutoscalerBuilder()
-            //                .withNewMetadata()
-            //                .withName("my-hpa")
-            //                .withNamespace("default")
-            //                .endMetadata()
-            //                .withNewSpec()
-            //                .withNewScaleTargetRef()
-            //                .withApiVersion("apps/v1")
-            //                .withKind(kind)
-            //                .withName(name)
-            //                .endScaleTargetRef()
-            //                .endSpec()
-            //                .build()
-            );
+                                .name(name))));
     return gson.fromJson(hpa, KubernetesManifest.class);
   }
 

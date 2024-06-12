@@ -80,15 +80,6 @@ class KubernetesKindPropertiesSpec extends Specification {
           .names(new V1CustomResourceDefinitionNames().kind(kind))
           .group(group)
         .scope(scope))
-//      new V1beta1CustomResourceDefinitionBuilder()
-//        .withSpec(
-//          new V1beta1CustomResourceDefinitionSpecBuilder()
-//            .withNames(
-//              new V1beta1CustomResourceDefinitionNamesBuilder().withKind(kind).build())
-//            .withGroup(group)
-//            .withScope(scope)
-//            .build())
-//        .build()
     def kindProperties = KubernetesKindProperties.fromCustomResourceDefinition(crd)
 
     then:
