@@ -17,19 +17,14 @@
 
 package com.netflix.spinnaker.clouddriver.sql
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.netflix.spectator.api.NoopRegistry
-import com.netflix.spinnaker.clouddriver.sql.event.SqlEventCleanupAgent
-import com.netflix.spinnaker.config.SqlEventCleanupAgentConfigProperties
 import com.netflix.spinnaker.config.SqlTaskCleanupAgentProperties
-import com.netflix.spinnaker.kork.dynamicconfig.DynamicConfigService
 import com.netflix.spinnaker.kork.sql.test.SqlTestUtil
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import io.mockk.every
-import io.mockk.mockk
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
-import java.sql.Timestamp
 import java.time.Clock
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -54,7 +49,7 @@ class SqlTaskCleanupAgentTest : JUnit5Minutests {
             "7b96fe8de1e5e8e8620036480771195b8e25c583c9f4f0098a23e97bf2ba013b",
             "95637b33-6699-4abf-b1ab-d4077e1cf867@spin-clouddriver-7847bc646b-hgkfd",
             ts.toEpochMilli(),
-            mutableListOf<String>()
+            jacksonObjectMapper().writeValueAsString(mutableListOf<String>())
           )
           .execute()
 
