@@ -168,6 +168,11 @@ class AppengineServerGroup implements ServerGroup, Serializable {
     null
   }
 
+  @Override
+  Boolean isDisabled() {
+    disabled
+  }
+
   enum ServingStatus {
     SERVING,
     STOPPED,

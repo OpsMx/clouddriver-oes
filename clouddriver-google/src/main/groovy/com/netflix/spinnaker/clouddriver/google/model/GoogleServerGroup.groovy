@@ -175,6 +175,11 @@ class GoogleServerGroup implements GoogleLabeledResource {
     }
 
     @Override
+    Boolean isDisabled() { // Because groovy isn't smart enough to generate this method :-(
+      disabled
+    }
+
+    @Override
     Long getCreatedTime() {
       launchConfig ? launchConfig.createdTime as Long : null
     }
