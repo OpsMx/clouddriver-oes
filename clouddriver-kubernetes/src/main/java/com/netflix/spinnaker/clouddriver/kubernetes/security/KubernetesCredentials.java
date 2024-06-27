@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -66,6 +67,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
@@ -671,18 +673,26 @@ public class KubernetesCredentials {
 
   private <T> T runAndRecordMetrics(
       String action, List<KubernetesKind> kinds, String namespace, Supplier<T> op) {
-    return op.get();
-    /**
-     * Commenting below to avoid flood of metrics on every kubernetes operation Map<String, String>
-     * tags = new HashMap<>(); tags.put("action", action); tags.put( "kinds",
-     * kinds.stream().map(KubernetesKind::toString).sorted().collect(Collectors.joining(",")));
-     * tags.put("account", accountName); tags.put("namespace", Strings.isNullOrEmpty(namespace) ?
-     * "none" : namespace); tags.put("success", "true"); long startTime = clock.monotonicTime(); try
-     * { return op.get(); } catch (RuntimeException e) { tags.put("success", "false");
-     * tags.put("reason", e.getClass().getSimpleName()); throw e; } finally { registry
-     * .timer(registry.createId("kubernetes.api", tags)) .record(clock.monotonicTime() - startTime,
-     * TimeUnit.NANOSECONDS); }
-     */
+    Map<String, String> tags = new HashMap<>();
+    tags.put("action", action);
+    tags.put(
+        "kinds",
+        kinds.stream().map(KubernetesKind::toString).sorted().collect(Collectors.joining(",")));
+    tags.put("account", accountName);
+    tags.put("namespace", Strings.isNullOrEmpty(namespace) ? "none" : namespace);
+    tags.put("success", "true");
+    long startTime = clock.monotonicTime();
+    try {
+      return op.get();
+    } catch (RuntimeException e) {
+      tags.put("success", "false");
+      tags.put("reason", e.getClass().getSimpleName());
+      throw e;
+    } finally {
+      registry
+          .timer(registry.createId("kubernetes.api", tags))
+          .record(clock.monotonicTime() - startTime, TimeUnit.NANOSECONDS);
+    }
   }
 
   /**

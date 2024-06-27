@@ -110,6 +110,28 @@ final class KubernetesCredentialsTest {
   }
 
   @Test
+  void metricTagsForSuccessfulList() {
+    KubectlJobExecutor jobExecutor = mock(KubectlJobExecutor.class);
+    Registry registry = new DefaultRegistry();
+    KubernetesCredentials credentials = getCredentials(registry, jobExecutor);
+    credentials.list(
+        ImmutableList.of(KubernetesKind.DEPLOYMENT, KubernetesKind.REPLICA_SET), NAMESPACE);
+    ImmutableList<Timer> timers = registry.timers().collect(toImmutableList());
+    assertThat(timers).hasSize(1);
+
+    Timer timer = timers.get(0);
+    assertThat(timer.id().name()).isEqualTo("kubernetes.api");
+
+    assertThat(timer.id().tags())
+        .containsExactlyInAnyOrder(
+            Tag.of("account", ACCOUNT_NAME),
+            Tag.of("action", "list"),
+            Tag.of("kinds", "deployment,replicaSet"),
+            Tag.of("namespace", NAMESPACE),
+            Tag.of("success", "true"));
+  }
+
+  @Test
   void metricTagsForSuccessfulListNoNamespace() {
     KubectlJobExecutor jobExecutor = mock(KubectlJobExecutor.class);
     Registry registry = new DefaultRegistry();
