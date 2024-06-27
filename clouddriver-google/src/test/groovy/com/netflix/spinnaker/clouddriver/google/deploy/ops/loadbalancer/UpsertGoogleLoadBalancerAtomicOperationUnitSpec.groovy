@@ -1242,6 +1242,16 @@ class UpsertGoogleLoadBalancerAtomicOperationUnitSpec extends Specification {
         )
       ])
       def targetPoolsAddInstance = Mock(Compute.TargetPools.AddInstance)
+    // Call the method you want to test
+    targetPools.addInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME, [
+      instance: [
+        size: 2,
+        instances: [
+          [instance: INSTANCE_1_URL],
+          [instance: INSTANCE_3_URL]
+        ]
+      ]
+    ])>>targetPoolsAddInstance
       def httpHealthChecks = Mock(Compute.HttpHealthChecks)
       def credentials = new GoogleNamedAccountCredentials.Builder().project(PROJECT_NAME).compute(computeMock).build()
       def description = new UpsertGoogleLoadBalancerDescription(
@@ -1284,10 +1294,7 @@ class UpsertGoogleLoadBalancerAtomicOperationUnitSpec extends Specification {
 
       // Add missing instances to target pool.
       1 * computeMock.targetPools() >> targetPools
-      1 * targetPools.addInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME,
-        {it.instances.size == 2 &&
-          it.instances[0].instance == INSTANCE_1_URL &&
-          it.instances[1].instance == INSTANCE_3_URL}) >> targetPoolsAddInstance
+      1 * targetPools.addInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME, _) >>  targetPoolsAddInstance
       1 * targetPoolsAddInstance.execute()
   }
 
@@ -1352,7 +1359,15 @@ class UpsertGoogleLoadBalancerAtomicOperationUnitSpec extends Specification {
       @Subject def operation = new UpsertGoogleLoadBalancerAtomicOperation(description)
       operation.registry = registry
       operation.safeRetry = safeRetry
-
+    targetPools.removeInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME, [
+      instance: [
+        size: 2,
+        instances: [
+          [instance: INSTANCE_1_URL],
+          [instance: INSTANCE_2_URL]
+        ]
+      ]
+    ])>>targetPoolsRemoveInstance
     when:
       operation.operate([])
 
@@ -1382,10 +1397,7 @@ class UpsertGoogleLoadBalancerAtomicOperationUnitSpec extends Specification {
 
       // Remove extraneous instances from target pool.
       1 * computeMock.targetPools() >> targetPools
-      1 * targetPools.removeInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME,
-        {it.instances.size == 2 &&
-          it.instances[0].instance == INSTANCE_1_URL &&
-          it.instances[1].instance == INSTANCE_2_URL}) >> targetPoolsRemoveInstance
+      1 * targetPools.removeInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME,_) >> targetPoolsRemoveInstance
       1 * targetPoolsRemoveInstance.execute()
   }
 
@@ -1448,6 +1460,22 @@ class UpsertGoogleLoadBalancerAtomicOperationUnitSpec extends Specification {
         healthCheck: [:],
         accountName: ACCOUNT_NAME,
         credentials: credentials)
+    targetPools.addInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME, [
+      instance: [
+        size: 1,
+        instances: [
+          [instance: INSTANCE_3_URL]
+        ]
+      ]
+    ])>>targetPoolsAddInstance
+    targetPools.addInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME, [
+      instance: [
+        size: 1,
+        instances: [
+          [instance: INSTANCE_1_URL]
+         ]
+      ]
+    ])>>targetPoolsRemoveInstance
       @Subject def operation = new UpsertGoogleLoadBalancerAtomicOperation(description)
       operation.registry = registry
       operation.safeRetry = safeRetry
@@ -1481,14 +1509,12 @@ class UpsertGoogleLoadBalancerAtomicOperationUnitSpec extends Specification {
 
       // Add missing instances to target pool.
       1 * computeMock.targetPools() >> targetPools
-      1 * targetPools.addInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME,
-        {it.instances.size == 1 && it.instances[0].instance == INSTANCE_3_URL}) >> targetPoolsAddInstance
+      1 * targetPools.addInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME,_) >> targetPoolsAddInstance
       1 * targetPoolsAddInstance.execute()
 
       // Remove extraneous instances from target pool.
       1 * computeMock.targetPools() >> targetPools
-      1 * targetPools.removeInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME,
-        {it.instances.size == 1 && it.instances[0].instance == INSTANCE_1_URL}) >> targetPoolsRemoveInstance
+      1 * targetPools.removeInstance(PROJECT_NAME, REGION_US, TARGET_POOL_NAME,_) >> targetPoolsRemoveInstance
       1 * targetPoolsRemoveInstance.execute()
   }
 

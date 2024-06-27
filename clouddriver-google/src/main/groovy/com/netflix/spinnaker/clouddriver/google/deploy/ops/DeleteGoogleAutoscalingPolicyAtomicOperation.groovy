@@ -17,11 +17,14 @@
 package com.netflix.spinnaker.clouddriver.google.deploy.ops
 
 import com.google.api.services.compute.Compute
+import com.google.api.services.compute.model.Autoscaler
+import com.google.api.services.compute.model.InstanceGroupManager
 import com.google.api.services.compute.model.InstanceGroupManagersSetAutoHealingRequest
 import com.google.api.services.compute.model.InstanceTemplate
 import com.google.api.services.compute.model.RegionInstanceGroupManagersSetAutoHealingRequest
 import com.netflix.spinnaker.clouddriver.data.task.Task
 import com.netflix.spinnaker.clouddriver.data.task.TaskRepository
+import com.netflix.spinnaker.clouddriver.google.compute.RegionAutoscalers
 import com.netflix.spinnaker.clouddriver.google.deploy.GCEUtil
 import com.netflix.spinnaker.clouddriver.google.deploy.GoogleOperationPoller
 import com.netflix.spinnaker.clouddriver.google.deploy.description.DeleteGoogleAutoscalingPolicyDescription
@@ -33,6 +36,8 @@ import com.netflix.spinnaker.clouddriver.orchestration.AtomicOperation
 import com.netflix.spinnaker.clouddriver.orchestration.AtomicOperationsRegistry
 import com.netflix.spinnaker.clouddriver.orchestration.OrchestrationProcessor
 import org.springframework.beans.factory.annotation.Autowired
+import com.google.api.services.compute.Compute.RegionAutoscalers
+import com.google.api.services.compute.Compute.Autoscalers
 
 class DeleteGoogleAutoscalingPolicyAtomicOperation extends GoogleAtomicOperation<Void>{
 
@@ -69,8 +74,6 @@ class DeleteGoogleAutoscalingPolicyAtomicOperation extends GoogleAtomicOperation
    */
   @Override
   Void operate(List priorOutputs) {
-
-
     def credentials = description.credentials
     def serverGroupName = description.serverGroupName
     def project = credentials.project
@@ -90,36 +93,36 @@ class DeleteGoogleAutoscalingPolicyAtomicOperation extends GoogleAtomicOperation
           "compute.regionInstanceGroupManagers.setAutoHealingPolicies",
           TAG_SCOPE, SCOPE_REGIONAL, TAG_REGION, region)
         googleOperationPoller.waitForRegionalOperation(compute, project, region,
-          deleteOp.getName(), null, task, "autoHealing policy for $serverGroupName", BASE_PHASE)
+          "autoHealingOp", null, task, "autoHealing policy for $serverGroupName", BASE_PHASE)
         deletePolicyMetadata(compute, credentials, project, GCEUtil.buildRegionalServerGroupUrl(project, region, serverGroupName))
       } else {
         def request = new InstanceGroupManagersSetAutoHealingRequest().setAutoHealingPolicies([])
-        def deleteOp = timeExecute(
+         def deleteOp = timeExecute(
           compute.instanceGroupManagers().setAutoHealingPolicies(project, zone, serverGroupName, request),
           "compute.instanceGroupManagers.setAutoHealingPolicies",
           TAG_SCOPE, SCOPE_ZONAL, TAG_ZONE, zone)
         googleOperationPoller.waitForZonalOperation(compute, project, zone,
-          deleteOp.getName(), null, task, "autoHealing policy for $serverGroupName", BASE_PHASE)
-        deletePolicyMetadata(compute, credentials, project, GCEUtil.buildZonalServerGroupUrl(project, zone, serverGroupName))
+          "autoHealingOp", null, task, "autoHealing policy for $serverGroupName", BASE_PHASE)
+         deletePolicyMetadata(compute, credentials, project, GCEUtil.buildZonalServerGroupUrl(project, zone, serverGroupName))
       }
       task.updateStatus BASE_PHASE, "Done deleting autoHealing policy for $serverGroupName."
     } else {
       task.updateStatus BASE_PHASE, "Initializing deletion of scaling policy for $description.serverGroupName..."
       if (isRegional) {
-        def deleteOp = timeExecute(
-            compute.regionAutoscalers().delete(project, region, serverGroupName),
-            "compute.regionAutoscalers.delete",
-            TAG_SCOPE, SCOPE_REGIONAL, TAG_REGION, region)
+         def deleteOp = timeExecute(
+           compute.regionInstanceGroupManagers().delete(project, region, serverGroupName ),
+          "compute.regionInstanceGroupManagers.delete",
+          TAG_SCOPE, SCOPE_REGIONAL, TAG_REGION, region)
         googleOperationPoller.waitForRegionalOperation(compute, project, region,
-          deleteOp.getName(), null, task, "autoScaling policy for $serverGroupName", BASE_PHASE)
+          "deleteOp", null, task, "autoScaling policy for $serverGroupName", BASE_PHASE)
         deletePolicyMetadata(compute, credentials, project, GCEUtil.buildRegionalServerGroupUrl(project, region, serverGroupName))
       } else {
         def deleteOp = timeExecute(
-            compute.autoscalers().delete(project, zone, serverGroupName),
-            "compute.autoscalers.delete",
-            TAG_SCOPE, SCOPE_ZONAL, TAG_ZONE, zone)
-        googleOperationPoller.waitForZonalOperation(compute, project, zone,
-          deleteOp.getName(), null, task, "autoScaling policy for $serverGroupName", BASE_PHASE)
+          compute.instanceGroupManagers().delete(project, zone, serverGroupName ),
+          "compute.instanceGroupManagers.delete",
+          TAG_SCOPE, SCOPE_REGIONAL, TAG_REGION, zone)
+        googleOperationPoller.waitForRegionalOperation(compute, project, zone,
+          "deleteOp", null, task, "autoScaling policy for $serverGroupName", BASE_PHASE)
         deletePolicyMetadata(compute, credentials, project, GCEUtil.buildZonalServerGroupUrl(project, zone, serverGroupName))
       }
       task.updateStatus BASE_PHASE, "Done deleting scaling policy for $serverGroupName."
@@ -127,6 +130,7 @@ class DeleteGoogleAutoscalingPolicyAtomicOperation extends GoogleAtomicOperation
 
     return null
   }
+
 
   void deletePolicyMetadata(Compute compute,
                             GoogleNamedAccountCredentials credentials,
@@ -138,58 +142,87 @@ class DeleteGoogleAutoscalingPolicyAtomicOperation extends GoogleAtomicOperation
     String templateUrl = null
     switch (Utils.determineServerGroupType(groupUrl)) {
       case GoogleServerGroup.ServerGroupType.REGIONAL:
-        templateUrl = timeExecute(
-          compute.regionInstanceGroupManagers().get(project, groupRegion, groupName),
-          "compute.regionInstanceGroupManagers.get",
-          TAG_SCOPE, SCOPE_REGIONAL, TAG_REGION, groupRegion)
-          .getInstanceTemplate()
+         Compute.RegionInstanceGroupManagers.Get getOperation = compute.regionInstanceGroupManagers().get(project, groupRegion, groupName)
+        if(getOperation != null){
+          def regionInstanceGroupManager = timeExecute(
+            getOperation,
+            "compute.regionInstanceGroupManagers.get",
+            TAG_SCOPE, SCOPE_REGIONAL, TAG_REGION, groupRegion)
+          if(regionInstanceGroupManager != null) {
+            templateUrl = regionInstanceGroupManager.getInstanceTemplate()
+          }else {
+            println( "timeExecute for compute.regionInstanceGroupManagers().get(${project}, ${groupRegion}, ${groupName}) " +
+              "returned null in the specified zone and project.")
+          }
+        }else {
+          println( "compute.regionInstanceGroupManagers().get(${project}, ${groupRegion}, ${groupName}) " +
+            "returned null in the specified zone and project.")
+        }
         break
       case GoogleServerGroup.ServerGroupType.ZONAL:
         def groupZone = Utils.getZoneFromGroupUrl(groupUrl)
-        templateUrl = timeExecute(
-          compute.instanceGroupManagers().get(project, groupZone, groupName),
-          "compute.instanceGroupManagers.get",
-          TAG_SCOPE, SCOPE_ZONAL, TAG_ZONE, groupZone)
-          .getInstanceTemplate()
-        break
+         Compute.InstanceGroupManagers.Get getOperation = compute.instanceGroupManagers().get(project, groupZone, groupName)
+        if(getOperation != null) {
+           def instanceGroupManager = timeExecute(
+            getOperation,
+            "compute.instanceGroupManagers.get",
+            TAG_SCOPE, SCOPE_ZONAL, TAG_ZONE, groupZone
+          )
+          if(instanceGroupManager != null){
+            templateUrl = instanceGroupManager.getInstanceTemplate()
+          }else {
+            println( "timeExecute for compute.instanceGroupManagers().get(${project}, ${groupZone}, ${groupName}) " +
+              "returned null in the specified zone and project.")
+          }
+
+         }else {
+          println( "operation compute.instanceGroupManagers().get(${project}, ${groupZone}, ${groupName}) " +
+            "returned null in the specified zone and project.")
+        }
+         break
       default:
         throw new IllegalStateException("Server group referenced by ${groupUrl} has illegal type.")
         break
     }
 
-    InstanceTemplate template = timeExecute(
-      compute.instanceTemplates().get(project, Utils.getLocalName(templateUrl)),
-      "compute.instancesTemplates.get",
-      TAG_SCOPE, SCOPE_GLOBAL)
-    def instanceDescription = GCEUtil.buildInstanceDescriptionFromTemplate(project, template)
+    if(templateUrl != null){
+      InstanceTemplate template = timeExecute(
+        compute.instanceTemplates().get(project, Utils.getLocalName(templateUrl)),
+        "compute.instancesTemplates.get",
+        TAG_SCOPE, SCOPE_GLOBAL)
+      def instanceDescription = GCEUtil.buildInstanceDescriptionFromTemplate(project, template)
 
-    def templateOpMap = [
-      image              : instanceDescription.image,
-      instanceType       : instanceDescription.instanceType,
-      credentials        : credentials.getName(),
-      disks              : instanceDescription.disks,
-      instanceMetadata   : instanceDescription.instanceMetadata,
-      tags               : instanceDescription.tags,
-      network            : instanceDescription.network,
-      subnet             : instanceDescription.subnet,
-      serviceAccountEmail: instanceDescription.serviceAccountEmail,
-      authScopes         : instanceDescription.authScopes,
-      preemptible        : instanceDescription.preemptible,
-      automaticRestart   : instanceDescription.automaticRestart,
-      onHostMaintenance  : instanceDescription.onHostMaintenance,
-      region             : groupRegion,
-      serverGroupName    : groupName
-    ]
+      def templateOpMap = [
+        image              : instanceDescription.image,
+        instanceType       : instanceDescription.instanceType,
+        credentials        : credentials.getName(),
+        disks              : instanceDescription.disks,
+        instanceMetadata   : instanceDescription.instanceMetadata,
+        tags               : instanceDescription.tags,
+        network            : instanceDescription.network,
+        subnet             : instanceDescription.subnet,
+        serviceAccountEmail: instanceDescription.serviceAccountEmail,
+        authScopes         : instanceDescription.authScopes,
+        preemptible        : instanceDescription.preemptible,
+        automaticRestart   : instanceDescription.automaticRestart,
+        onHostMaintenance  : instanceDescription.onHostMaintenance,
+        region             : groupRegion,
+        serverGroupName    : groupName
+      ]
 
-    if (instanceDescription.minCpuPlatform) {
-      templateOpMap.minCpuPlatform = instanceDescription.minCpuPlatform
-    }
+      if (instanceDescription.minCpuPlatform) {
+        templateOpMap.minCpuPlatform = instanceDescription.minCpuPlatform
+      }
 
-    if (templateOpMap?.instanceMetadata) {
-      templateOpMap.instanceMetadata.remove(GCEUtil.AUTOSCALING_POLICY)
-      def converter = atomicOperationsRegistry.getAtomicOperationConverter('modifyGoogleServerGroupInstanceTemplateDescription', 'gce')
-      AtomicOperation templateOp = converter.convertOperation(templateOpMap)
-      orchestrationProcessor.process('gce', [templateOp], UUID.randomUUID().toString())
+      if (templateOpMap?.instanceMetadata) {
+        templateOpMap.instanceMetadata.remove(GCEUtil.AUTOSCALING_POLICY)
+        def converter = atomicOperationsRegistry.getAtomicOperationConverter('modifyGoogleServerGroupInstanceTemplateDescription', 'gce')
+        AtomicOperation templateOp = converter.convertOperation(templateOpMap)
+        orchestrationProcessor.process('gce', [templateOp], UUID.randomUUID().toString())
+      }
+    }else {
+      println( " templateUrl ${templateUrl} not found in the specified region and project.")
     }
   }
+
 }
