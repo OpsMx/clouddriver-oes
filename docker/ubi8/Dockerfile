@@ -57,4 +57,5 @@ RUN chmod -R 777 /etc/pki/tls/certs
 RUN chmod -R 777 /var/
 RUN chown -R spinnaker:spinnaker /var
 USER spinnaker
+HEALTHCHECK CMD curl --fail http://localhost:7002/health
 CMD  sleep 180s ; "/opt/clouddriver/bin/clouddriver"
