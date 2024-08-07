@@ -52,8 +52,8 @@ default:
   account:
     env: default
 
-aws:
-  enabled: ${AWS_ENABLED:false}
+#aws:
+  #enabled: ${AWS_ENABLED:false}
 #  features:
 #    launch-templates:
 #      enabled: true
