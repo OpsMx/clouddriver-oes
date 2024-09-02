@@ -30,7 +30,7 @@ jobs:
       - name: Prepare build variables
         id: build_variables
         run: |
-          echo ::set-output name=REPO::ubi8-clouddriver-cve
+          echo ::set-output name=REPO::ubi8-clouddriver-cve-arm64
           #echo ::set-output name=VERSION::"1.33.0$(date --utc +'%Y%m%d')"
           echo ::set-output name=VERSION::"1.33.3"
           echo "::set-output name=GITHASH::$(git rev-parse --short HEAD)"
@@ -81,7 +81,9 @@ jobs:
             CUSTOMPLUGIN_RELEASEORG=opsmx
             CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
             CUSTOMPLUGIN_RELEASE_VERSION=1.0.1
-          file: docker/ubi8/Dockerfile-fips
+         # file: docker/ubi8/Dockerfile-fips
+          file: Dockerfile.slim
+
           push: true
           tags: |
            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-${{ steps.build_variables.outputs.GITHASH }}-${{ steps.build_variables.outputs.BUILDDATE }}"
