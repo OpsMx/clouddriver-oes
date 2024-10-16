@@ -4,7 +4,7 @@ on:
   workflow_call:
   push:
     branches:
-    - OES-1.33.x
+    - bugfix/OP-22783-OES-1.33.x
 
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
@@ -52,26 +52,26 @@ jobs:
           sed  -e 's|NEXUS_PASSWORD|${{ secrets.NEXUS_PASSWORD }}|' -i build.gradle
           sed  -e 's|NEXUS_URL|${{ secrets.NEXUS_URL }}|' -i settings.gradle
           sed  -e 's|NEXUS_URL|${{ secrets.NEXUS_URL }}|' -i build.gradle
-     
-          ./gradlew --no-daemon -PenableCrossCompilerPlugin=true clouddriver-web:installDist -x test 
-          
+
+          ./gradlew --no-daemon -PenableCrossCompilerPlugin=true clouddriver-web:installDist -x test
+
           #./gradlew --no-daemon clouddriver-web:installDist -x test
-          
+
             #extra_opts='"--add-opens=java.base/sun.net=ALL-UNNAMED" "--add-exports=java.base/sun.net=ALL-UNNAMED" "--add-opens=java.base/java.time=ALL-UNNAMED"'
-            
-            
+
+
             extra_opts='"-Djava.security.egd=file:/dev/./urandom" "-Dspring.config.import=optional:/opt/spinnaker/config/" "--add-opens=java.base/sun.net=ALL-UNNAMED" "--add-exports=java.base/sun.net=ALL-UNNAMED" "--add-opens=java.base/java.time=ALL-UNNAMED" "--add-exports=java.base/sun.security.rsa=ALL-UNNAMED" "--add-exports=java.base/sun.security.pkcs=ALL-UNNAMED" "--add-exports=java.base/sun.security.x509=ALL-UNNAMED"'
-            
+
             extra_opts_escaped=$(sed 's/[\/&]/\\&/g' <<< "$extra_opts")
-              
+
             echo $extra_opts_escaped
-            
-            #sed "s/^\(DEFAULT_JVM_OPTS=\'.*\)\'$/\1 $extra_opts_escaped\'/" -i clouddriver-web/build/install/clouddriver/bin/clouddriver               
-            
+
+            #sed "s/^\(DEFAULT_JVM_OPTS=\'.*\)\'$/\1 $extra_opts_escaped\'/" -i clouddriver-web/build/install/clouddriver/bin/clouddriver
+
                 sed "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$extra_opts_escaped'/"  -i clouddriver-web/build/install/clouddriver/bin/clouddriver
-                
+
               cat clouddriver-web/build/install/clouddriver/bin/clouddriver
-              
+
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:
@@ -87,7 +87,7 @@ jobs:
           push: true
           tags: |
            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-${{ steps.build_variables.outputs.GITHASH }}-${{ steps.build_variables.outputs.BUILDDATE }}"
-    
+
       - name: dockerBuildpushjaeger
         uses: docker/build-push-action@v2
         with:
@@ -102,11 +102,11 @@ jobs:
           tags: |
            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-${{ steps.build_variables.outputs.GITHASH }}-${{ steps.build_variables.outputs.BUILDDATE }}-dev"
 
-    
+
       - id: get-build-name
         run: |
             imageName="${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-${{ steps.build_variables.outputs.GITHASH }}-${{ steps.build_variables.outputs.BUILDDATE }}"
-    
+
             echo "clouddriver=$imageName" >> $GITHUB_OUTPUT
   outputs:
     runs-on: ubuntu-latest
@@ -117,7 +117,7 @@ jobs:
       # with:
       #   repository: opsmx/cve-target
       #   ref: refs/heads/main
-    - run: | 
+    - run: |
          echo "   "
           # echo artifactId: ${{ needs.build-clouddriver.outputs.clouddriver }} > default/service-settings/clouddriver.yml
           #         git config user.name github-actions
